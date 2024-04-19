@@ -4,12 +4,18 @@ const db = require("../config/database");
 const userTabel = db.define(
   "userTabel", 
   {
-    firstName: {
+    username: {
       type: Sequelize.STRING,
+      allowNull: false,
+      unique: true
+    },
+    password: {
+      type: Sequelize.BLOB,
       allowNull: false
     },
-    lastName: {
-      type: Sequelize.STRING
+    salt: {
+      type: Sequelize.BLOB,
+      allowNull: false
     }
   },
   {
