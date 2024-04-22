@@ -116,3 +116,13 @@ function selectInput(list){
     inputbox.value = list.innerHTML;
     resultbox.innerHTML = "";
 }
+
+function Error() {
+    const popup = document.querySelector(".errorP");
+    popup.classList.add("errorPV");
+}
+
+function ErrorOf() {
+    const popup = document.querySelector(".errorP");
+    popup.classList.remove("errorPV");
+}

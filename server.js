@@ -30,12 +30,13 @@ app.get("/form", (req, res) => {
     if(req.user) {
         res.render("form")
     }else {
-        res.redirect("/users/login")
+        res.redirect("/reg")
     }
 });
 app.get("/about", (req, res) => res.render("about"));
 app.get("/aboutv2", (req, res) => res.render("aboutv2"));
 app.get("/add", (req, res) => res.render("add"));
+app.get("/reg", (req, res) => res.render("tlogin", { layout: "user" }))
 // app.get("/login", (req, res) => res.render("loging"));
 // app.get("/register", (req, res) => res.render("register"));
 

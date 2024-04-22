@@ -78,8 +78,10 @@ router.get("/register", (req, res) => {
             break;
         case "2":
             msg = "The username is already taken."
+            break;
         case "3":
             msg = "Failed to login."
+            break;
     }
     res.render("register", { error: msg });
 

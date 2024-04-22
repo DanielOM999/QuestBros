@@ -534,6 +534,171 @@ html {
     margin-top: 0.2vw;
 }
 
+.body2 {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Jost'  , sans-serif;
+    background: linear-gradient(to bottom, #04041d, #1a1926, #181818);
+}
+
+.main {
+    width: 35rem;
+    height: 45rem;
+    background: red;
+    overflow: hidden;
+    background: url(bgreg.jpg) no-repeat center / cover;
+    border-radius: 1rem;
+    box-shadow: 0.5rem 2rem 5rem #000;
+}
+
+#chk {
+    display: none;
+}
+
+.signup {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.ulabel {
+    color: #fff;
+    font-size: 3rem;
+    justify-content: center;
+    display: flex;
+    margin: 5.2rem;
+    margin-bottom: 4.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .5s ease-in-out;
+}
+
+.uIn {
+    width: 60%;
+    height: 4rem;
+    background: #e0dede;
+    justify-content: center;
+    display: flex;
+    margin: 1.5rem auto;
+    padding: 1rem;
+    border: none;
+    outline: none;
+    border-radius: 0.70rem;
+}
+
+.uBtn {
+    width: 58%;
+    height: 4rem;
+    margin: 10rem auto;
+    justify-content: center;
+    display: block;
+    color: #fff;
+    background-color: #29325c;
+    font-size: 1.7rem;
+    font-weight: bold;
+    margin-top: 2rem;
+    outline: none;
+    border: none;
+    border-radius: 0.7rem;
+    transition: .2s ease-in;
+    cursor: pointer;
+}
+
+.uBtn:hover {
+    background: #2d3967;
+}
+
+.login {
+    height: 46rem;
+    background: #eee;
+    border-radius: 60% / 10%;
+    transform: translateY(-18rem);
+    transition: .8s ease-in-out;
+}
+
+.login label {
+    color: #232b4f;
+    transform: scale(.7);
+}
+
+#chk:checked ~ .login {
+    transform: translateY(-40rem);
+}
+
+#chk:checked ~ .login label {
+    transform: scale(1);
+}
+
+#chk:checked ~ .signup label {
+    transform: scale(.6);
+}
+
+.errorP {
+    position: absolute;
+    z-index: 1;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to bottom, #dcdcdc, #ddc2c2, #7d5353);
+    width: 25vw;
+    height: 18vw;
+    padding-bottom: 4vw;
+    border-radius: 0.8vw;
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 1s, opacity 1s;
+}
+
+.errorPV {
+    transform: scale(1.5) translateY(20%);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.errorP img {
+    width: 8vw;
+}
+
+.errorP h1 {
+    padding-top: 1vw;
+    font-size: 2vw;
+    color: #000;
+}
+
+.errorP h2 {
+    padding: 0.8vw;
+    font-size: 1.2vw;
+}
+
+.errorP button {
+    width: 58%;
+    height: 3vw;
+    color: #fff;
+    background-color: #d50a0a;
+    font-size: 1.2vw;
+    font-weight: bold;
+    outline: none;
+    border: none;
+    border-radius: 0.7vw;
+    cursor: pointer;
+}
+
+.errorP button:hover {
+    background-color: #e50b0b;
+}
+
+
+
 @media (max-width: 430px) {
 
     .mh-box {
@@ -548,6 +713,42 @@ html {
     }
 }
 
+@media (max-width: 470px) {
+    .errorP h2 {
+        padding: 0.1vw;
+    }
+}
+
+@media (max-width: 375px) {
+    .main {
+        width: 25rem;
+        height: 35rem;
+    }
+
+    .ulabel {
+        font-size: 2rem;
+        margin: 4.2rem;
+        margin-bottom: 2.8rem;
+    }
+
+    .uIn {
+        height: 3rem;
+    }
+
+    .uBtn {
+        height: 3.2rem;
+        font-size: 1.4rem;
+    }
+
+    .login {
+        transform: translateY(-13.5rem);
+    }
+
+    #chk:checked ~ .login {
+        transform: translateY(-30rem);
+    }
+}
+
 @media (max-width: 300px) {
     .form-mh-box {
         margin-top: 0;
@@ -555,10 +756,57 @@ html {
     }
 }
 
+@media (max-width: 273px) {
+    .main {
+        width: 15rem;
+        height: 25rem;
+    }
+
+    .ulabel {
+        font-size: 1.5rem;
+        margin: 3.2rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .uIn {
+        height: 2rem;
+        border-radius: 0.5rem;
+    }
+
+    .uBtn {
+        height: 2.2rem;
+        font-size: 1rem;
+        border-radius: 0.6rem;
+    }
+
+    .login {
+        transform: translateY(-10rem);
+        border-radius: 80% / 10%;
+    }
+
+    #chk:checked ~ .login {
+        transform: translateY(-22rem);
+    }
+}
+
+@media (max-width: 291px) {
+    .errorP button {
+        transform: translateY(-20%);
+    }
+}
+
 @media (max-width: 250px) {
     .form-mh-box {
         margin-top: 0;
         transform: translateY(-10vw);
+    }
+
+    .errorP h2 {
+        transform: translateY(-50%);
+    }
+
+    .errorP button {
+        transform: translateY(-100%);
     }
 }
 

@@ -1,0 +1,35 @@
+<div class="main">
+    <input class="uIn" type="checkbox" id="chk" aria-hidden="true">
+    <div class="container">
+        <div class="row justify-content-center align-items-center errorP">
+            <div class="col text-center">
+                    <img src="remove.png">
+                    <h1>Somthing went wrong</h1>
+                    <h2>Wrong password or username</h2>
+                    <button onclick="ErrorOf()">ok</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="signup">
+        <form action="/users/signup" method="post">
+            <label class="ulabel" for="chk" aria-hidden="true">Sign up</label>
+            <input class="uIn" type="text" name="username" placeholder="Username" required>
+            {{!-- <input class="uIn" type="email" name="email" placeholder="Email" required=""> --}}
+            <input class="uIn" type="password" name="password" placeholder="Password" required>
+            <button class="uBtn" type="submit">Sign up</button>
+        </form>
+    </div>
+
+    <div class="login">
+        <form action="/users/login" method="post">
+            <label class="ulabel" for="chk" aria-hidden="true">Login</label>
+            <input class="uIn" type="text" name="username" placeholder="Username" required>
+            {{!-- <input class="uIn" type="email" name="email" placeholder="Email" required> --}}
+            <input class="uIn" type="password" name="password" placeholder="Password" required>
+            <button class="uBtn" type="submit">Login</button>
+        </form>
+    </div>
+</div>
+
+<button onclick="Error()">WoW</button>
