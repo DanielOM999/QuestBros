@@ -37,60 +37,46 @@ passport.deserializeUser(function(id, done){
 
 router.post("/login", passport.authenticate("local", {
     successRedirect: "/users",
-    failureRedirect: "/users/login?failed=1"
+    failureRedirect: "/users/req?failed=1"
 }))
-
-router.get("/login", (req, res) => {
-    const failed = req.query.failed
-    let msg
-    if (failed == "1") {
-        msg = "Incorrect username or password."
-    }
-    res.render("loging", { message: msg });
-});
 
 router.post("/signup", (req, res) => {
     let salt = crypto.randomBytes(16);
     crypto.pbkdf2(req.body.password, salt, 310000, 32, "sha256", async function(err, hashedPassword) {
-        if (err) {res.redirect("/users/register?failed=1")}
+        if (err) {res.redirect("/users/req?failed=1")}
 
         try {
             const user = await userTabel.create({username: req.body.username, password: hashedPassword, salt: salt})
 
             req.login(user, function(err) {
-                if (err) {res.redirect("/users/register?failed=3")}
+                if (err) {res.redirect("/users/req?failed=3")}
                 res.redirect("/users")
             })
         } catch (err) {
-            res.redirect("/users/register?failed=2")
+            res.redirect("/users/req?failed=2")
             console.log(err)
         }
     })
 });
 
-router.get("/register", (req, res) => {
-    const failed = req.query.failed
+router.get("/req", (req, res) => {
+    const failed = req.query.failed;
+    let msg = "";
 
-    let msg = ""
-    switch (failed) {
-        case "1":
-            msg = "The cryptation went wrong."
-            break;
-        case "2":
-            msg = "The username is already taken."
-            break;
-        case "3":
-            msg = "Failed to login."
-            break;
+    if (failed === "1") {
+        msg = "Incorrect username or password.";
+    } else if (failed === "2") {
+        msg = "The username is already taken.";
+    } else if (failed === "3") {
+        msg = "Failed to login.";
     }
-    res.render("register", { error: msg });
-
+    res.render("tlogin", { message: msg, layout: "user"  });
 });
 
 router.post("/logout", (req, res, next) => {
     req.logout(function(err) {
         if (err) { return next(err) }
-        res.redirect("/users/login")
+        res.redirect("/users/req")
     })
 });
 

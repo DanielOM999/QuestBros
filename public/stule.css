@@ -697,7 +697,60 @@ html {
     background-color: #e50b0b;
 }
 
+.hero {
+    width: 100%;
+    height: 100vh;
+    background: #d1d1d1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.card {
+    width: 400px;
+    background: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #333;
+    border: transparent;
+}
+
+.card h1 {
+    font-weight: 500;
+    color: #000;
+}
+
+.card p {
+    color: #333;
+}
+
+.card img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.card label{
+    display: block;
+    width: 200px;
+    background: #e3362c;
+    color: #fff;
+    padding: 12px;
+    font-size: 15px;
+    margin: 10px auto;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.card input {
+    display: none;
+}
 
 @media (max-width: 430px) {
 

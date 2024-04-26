@@ -1,13 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
     var stickyImage = document.querySelector(".sticky-image");
     var footer = document.getElementById("myFooter");
-    var footerOffset = footer.offsetTop;
+    if (footer) {
+        var footerOffset = footer.offsetTop;
+    }else {
+        var footerOffset = 0;
+    }
 
     function checkScroll() {
         var scrollPosition = window.scrollY || window.pageYOffset;
         var stopStickyAt = footerOffset - window.innerHeight + 160;
 
-        if (stickyImage) { // Check if stickyImage is not null
+        if (stickyImage) {
             if (scrollPosition > stopStickyAt) {
                 stickyImage.classList.remove("sticky");
             } else {
@@ -16,10 +20,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Attach the scroll event listener
     window.addEventListener("scroll", checkScroll);
 
-    // Initial check on page load
     checkScroll();
 });
 
@@ -88,21 +90,25 @@ let availebileKeywords = [
 const resultbox = document.querySelector(".result-box");
 const inputbox = document.getElementById("input-box");
 
-inputbox.onkeyup = function(){
-    let result = [];
-    let input = inputbox.value;
-    if(input.length){
-        result = availebileKeywords.filter((keyword)=>{
-            return keyword.toLowerCase().includes(input.toLowerCase());
-        });
-        console.log(result)
+document.addEventListener("DOMContentLoaded", function() {
+    if (inputbox) {
+        inputbox.onkeyup = function(){
+            let result = [];
+            let input = inputbox.value;
+            if(input.length){
+                result = availebileKeywords.filter((keyword)=>{
+                    return keyword.toLowerCase().includes(input.toLowerCase());
+                });
+                console.log(result)
+            }
+            displayTerms(result);
+    
+            if(!result.length){
+                resultbox.innerHTML = "";
+            }
+        }
     }
-    displayTerms(result);
-
-    if(!result.length){
-        resultbox.innerHTML = "";
-    }
-}
+});
 
 function displayTerms(result){
     const content = result.map((list)=>{
@@ -125,4 +131,17 @@ function Error() {
 function ErrorOf() {
     const popup = document.querySelector(".errorP");
     popup.classList.remove("errorPV");
+}
+
+if (/\/req\?failed/.test(window.location.href)) {
+    Error()
+    var newUrl = window.location.href.replace(/(\?|\&)failed=[^&]+/, '');
+    window.history.replaceState({}, document.title, newUrl);
+}
+
+let profilePic = document.getElementById("profile-pic");
+let inputFile = document.getElementById("input-file");
+
+inputFile.onchange = function() {
+    profilePic.src = URL.createObjectURL(inputFile.files[0]);
 }
