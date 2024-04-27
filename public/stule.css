@@ -700,15 +700,27 @@ html {
 .hero {
     width: 100%;
     height: 100vh;
-    background: #d1d1d1;
+    background-image: linear-gradient(180deg,#212121,#2e2e2e,#303030,#313131,#3e3e3e);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+.hero .bgbtn {
+    position: absolute;
+    top: 20%;
+    right: 2%;
+    z-index: 1;
+    border: none;
+    background: #2d2d48;
+    border-radius: 0.2vw;
+    padding: 0.2vw;
+    color: #ddd;
+}
+
 .card {
-    width: 400px;
-    background: #fff;
+    width: 30vw;
+    background: #1e1e1e;
     padding: 40px;
     border-radius: 15px;
     display: flex;
@@ -717,35 +729,32 @@ html {
     text-align: center;
     color: #333;
     border: transparent;
+    box-shadow: 0vw 0.4vw 1.5vw rgba(0, 0, 0, 0.9);
 }
 
 .card h1 {
     font-weight: 500;
-    color: #000;
+    color: #fff;
 }
 
 .card p {
-    color: #333;
+    color: #aaa;
 }
 
-.card img {
+.card #profile-pic {
     width: 180px;
     height: 180px;
     border-radius: 50%;
     margin-top: 40px;
     margin-bottom: 30px;
+    transition: 1s;
+    cursor: pointer;
+    opacity: 1;
 }
 
-.card label{
-    display: block;
-    width: 200px;
-    background: #e3362c;
-    color: #fff;
-    padding: 12px;
-    font-size: 15px;
-    margin: 10px auto;
-    border-radius: 5px;
-    cursor: pointer;
+.card #profile-pic:hover {
+    transform: scale(0.97);
+    opacity: 0.5;
 }
 
 .card input {

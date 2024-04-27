@@ -1,17 +1,11 @@
-{{!-- <div class="container mt-5">
-    <h1>Hello! {{username}}</h1>
-    <form action="/users/logout" method="post">
-        <input type="submit" name="Logout" value="Logout">
-    </form>
-    <div class="divider2"></div>
-</div> --}}
-
 <div class="hero">
     <div class="card">
-        <img src="/profile.png" id="profile-pic">
+        <label for="input-file"><img src="{{profilePicURL}}" id="profile-pic"></label>
         <h1>{{username}}</h1>
         <p>@{{toLowerCase username}}</p>
-        <label for="input-file">update image</label>
-        <input type="file" accept="image/jpeg, image/png, image/jpg" id="input-file">
+        <form action="/users/uploadProfilePic" method="POST" enctype="multipart/form-data">
+            <input type="file" accept="image/jpeg, image/png, image/jpg" id="input-file" name="image">
+            <button type="submit">Upload</button>
+        </form>
     </div>
 </div>

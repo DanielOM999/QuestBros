@@ -16,6 +16,10 @@ const userTabel = db.define(
     salt: {
       type: Sequelize.BLOB,
       allowNull: false
+    },
+    image: {
+      type: Sequelize.STRING,
+      allowNull: true
     }
   },
   {

@@ -3,7 +3,33 @@ let crypto = require("crypto");
 let passport = require("passport");
 let LocalStrategy = require("passport-local");
 const userTabel = require("../models/userTabel");
+const multer = require("multer");
+const path = require("path");
 const router = express.Router();
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "Images")
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5000000 },
+    fileFilter: (req, file, cb) => {
+        const fileType = /jpeg|jpg|png|gif/
+        const mimeType = fileType.test(file.mimetype)
+        const textname = fileType.test(path.extname(file.originalname))
+
+        if (mimeType && textname) {
+            return cb(null, true)
+        }
+        cb("File need to be a jpg, png or gif")
+    }
+}).single("image")
 
 passport.use(new LocalStrategy(async function verify(username, password, done) {
     try {
@@ -80,10 +106,38 @@ router.post("/logout", (req, res, next) => {
     })
 });
 
+router.post("/uploadProfilePic", upload, async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send("No file uploaded.");
+        }
+
+        console.log("File uploaded:", req.file);
+
+        const user = await userTabel.findOne({ where: { username: req.user.username } });
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+
+        user.image = req.file.path;
+        await user.save();
+
+        res.status(200).send("File uploaded successfully.");
+    } catch (error) {
+        console.error("Error uploading file:", error);
+        res.status(500).send("Error uploading file.");
+    }
+});
 
 router.get("/", (req, res) => {
     try {
-        res.render("userDetails", { username: req.user.username });
+        let profilePicURL;
+        if (req.user.image) {
+            profilePicURL = req.user.image;
+        }else {
+            profilePicURL = "/profile.png"
+        }
+        res.render("userDetails", { username: req.user.username, profilePicURL: profilePicURL });
     } catch (err) {
         console.log(err)
         res.status(404).render("error", { error: "User not found" });
