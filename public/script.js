@@ -139,6 +139,12 @@ if (/\/req\?failed/.test(window.location.href)) {
     window.history.replaceState({}, document.title, newUrl);
 }
 
+if (/\/users\?failed/.test(window.location.href)) {
+    Error()
+    var newUrl = window.location.href.replace(/(\?|\&)failed=[^&]+/, '');
+    window.history.replaceState({}, document.title, newUrl);
+}
+
 let profilePic = document.getElementById("profile-pic");
 let inputFile = document.getElementById("input-file");
 

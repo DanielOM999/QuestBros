@@ -5,6 +5,7 @@ let LocalStrategy = require("passport-local");
 const userTabel = require("../models/userTabel");
 const multer = require("multer");
 const path = require("path");
+const fs = require('fs');
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -27,7 +28,8 @@ const upload = multer({
         if (mimeType && textname) {
             return cb(null, true)
         }
-        cb("File need to be a jpg, png or gif")
+        cb("File must be PNG, JPG or GIF")
+        
     }
 }).single("image")
 
@@ -109,35 +111,56 @@ router.post("/logout", (req, res, next) => {
 router.post("/uploadProfilePic", upload, async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).send("No file uploaded.");
+            return res.status(400).redirect("/users?failed=1");
         }
 
         console.log("File uploaded:", req.file);
 
         const user = await userTabel.findOne({ where: { username: req.user.username } });
         if (!user) {
-            return res.status(404).send("User not found.");
+            return res.status(404).redirect("/users?failed=2");
+        }
+
+        if (user.image) {
+            fs.unlinkSync(user.image);
         }
 
         user.image = req.file.path;
         await user.save();
 
-        res.status(200).send("File uploaded successfully.");
+        res.status(200).redirect("/users");
     } catch (error) {
         console.error("Error uploading file:", error);
-        res.status(500).send("Error uploading file.");
+        res.status(500).redirect("/users?failed=3");
     }
 });
 
 router.get("/", (req, res) => {
     try {
-        let profilePicURL;
-        if (req.user.image) {
-            profilePicURL = req.user.image;
-        }else {
-            profilePicURL = "/profile.png"
+        if(req.user) {
+            let profilePicURL;
+            const failed = req.query.failed;
+            let msg = "";
+            if (req.user.image) {
+                profilePicURL = req.user.image;
+            }else {
+                profilePicURL = "/profile.png"
+            }
+
+            if (failed === "1") {
+                msg = "Nothing has changed";
+            } else if (failed === "2") {
+                msg = "User not found.";
+            } else if (failed === "3") {
+                msg = "Error uploading file.";
+            } else if (failed === "4") {
+                msg = "File must be png, jpg or gif.";
+            }
+            
+            res.render("userDetails", { username: req.user.username, profilePicURL: profilePicURL, message: msg });
+        } else {
+            res.redirect("/users/req")
         }
-        res.render("userDetails", { username: req.user.username, profilePicURL: profilePicURL });
     } catch (err) {
         console.log(err)
         res.status(404).render("error", { error: "User not found" });

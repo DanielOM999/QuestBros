@@ -1,3 +1,14 @@
+<div class="container">
+    <div class="row justify-content-center align-items-center errorP">
+        <div class="col text-center">
+                <img src="/remove.png">
+                <h1>Somthing went wrong</h1>
+                <h2>{{message}}</h2>
+                <button onclick="ErrorOf()">ok</button>
+        </div>
+    </div>
+</div>
+
 <div class="hero">
     <div class="card">
         <label for="input-file"><img src="{{profilePicURL}}" id="profile-pic"></label>
@@ -5,7 +16,11 @@
         <p>@{{toLowerCase username}}</p>
         <form action="/users/uploadProfilePic" method="POST" enctype="multipart/form-data">
             <input type="file" accept="image/jpeg, image/png, image/jpg" id="input-file" name="image">
-            <button type="submit">Upload</button>
+            <button class="Save" type="submit">Save</button>
+        </form>
+        <form action="/users/logout" method="post">
+            <input name="Logout" value="Logout">
+            <button class="Logout" type="submit">Log out</button>
         </form>
     </div>
 </div>
