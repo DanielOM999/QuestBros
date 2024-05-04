@@ -20,6 +20,10 @@ const userTabel = db.define(
     image: {
       type: Sequelize.STRING,
       allowNull: true
+    },
+    description: {
+      type: Sequelize.TEXT,
+      allowNull: true
     }
   },
   {

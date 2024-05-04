@@ -74,6 +74,36 @@ const forms = [
         "formName": "Haunted History Tours",
         "formDesc": "Join haunted history tours, explore haunted landmarks, and hear chilling tales of ghostly encounters.",
         "tags": "haunted-tours,history,ghost-stories"
+    },
+    {
+        "id": 8,
+        "name": "Ethan Brown",
+        "email": "ethan.brown@example.com",
+        "description": "Enthusiastic investigator of the supernatural, always ready to explore new mysteries.",
+        "profilePic": "/Ethan.png",
+        "formName": "Supernatural Investigations",
+        "formDesc": "Conduct investigations into supernatural phenomena, analyze evidence, and seek answers to the unexplained.",
+        "tags": "supernatural,investigations,paranormal"
+    },
+    {
+        "id": 9,
+        "name": "Ava Martinez",
+        "email": "ava.martinez@example.com",
+        "description": "Fascinated by the unknown and eager to share discoveries with fellow enthusiasts.",
+        "profilePic": "/Ava.jpg",
+        "formName": "Cryptid Encounters",
+        "formDesc": "Discuss encounters with cryptids, share sightings, and explore the lore surrounding mysterious creatures.",
+        "tags": "cryptids,creatures,mysteries"
+    },
+    {
+        "id": 10,
+        "name": "Liam Wilson",
+        "email": "liam.wilson@example.com",
+        "description": "Adventurous spirit with a passion for exploring the paranormal.",
+        "profilePic": "/Liam.jpg",
+        "formName": "Haunted Explorations",
+        "formDesc": "Embark on haunted explorations, visit eerie locations, and document supernatural phenomena.",
+        "tags": "haunted,explorations,paranormal"
     }
 ];
 

@@ -70,7 +70,7 @@
 <div class="container">
   <div class="row">
     {{#each forms}}
-    <div class="col-12">
+    <div class="col-12 formItem">
       <div class="formbtn" onclick="window.location='/form/{{id}}'">
         <div class="formbtn-side">
           <h1>{{name}}</h1>
@@ -87,6 +87,5 @@
     </div>
     {{/each}}
   </div>
+  <button id="showMoreBtn" onclick="showMore()">Show More</button>
 </div>
-
-

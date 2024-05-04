@@ -788,6 +788,23 @@ html {
     right: 66%;
 }
 
+#showMoreBtn {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    right: 55%;
+    left: 45%;
+    font-size: 1.2vw;
+    border-radius: 0.3vw;
+    background: #29325c;
+    max-width: 10vw;
+    min-width: 10vw;
+    border: none;
+    color: #ccc;
+}
+
 @media (max-width: 1200px) {
     .card .Save,
     .card .Logout {

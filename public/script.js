@@ -153,3 +153,33 @@ if (inputFile) {
         profilePic.src = URL.createObjectURL(inputFile.files[0]);
     }
 }
+
+let nShow = 4;
+
+function showMore() {
+    nShow += 4;
+    hideForms();
+}
+
+function hideForms() {
+    var formItems = document.getElementsByClassName('formItem');
+    var showMoreBtn = document.getElementById('showMoreBtn');
+    console.log(formItems.length);
+    console.log(nShow);
+
+    for (var i = 0; i < formItems.length; i++) {
+        if (i >= nShow) {
+            formItems[i].style.display = 'none';
+        } else if (nShow >= formItems.length) {
+            showMoreBtn.style.display = "none";
+            formItems[i].style.display = 'block';
+        }
+        else {
+            formItems[i].style.display = 'block';
+        }
+    }
+}
+
+window.onload = function() {
+    hideForms();
+};
