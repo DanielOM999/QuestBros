@@ -69,97 +69,23 @@
 
 <div class="container">
   <div class="row">
+    {{#each forms}}
     <div class="col-12">
-      <div class="formbtn">
+      <div class="formbtn" onclick="window.location='/form/{{id}}'">
         <div class="formbtn-side">
-            <h1>Alex Smith</h1>
-            <h2>alex.smith@example.com</h2>
-            <p>Exploring the mysteries 
-                of the unknown, one 
-                conversation at a time.
-            </p>
+          <h1>{{name}}</h1>
+          <h2>{{email}}</h2>
+          <p>{{description}}</p>
         </div>
         <div class="formbtText">
-            <h1>Haunted Locations</h1>
-            <p>Join discussions about infamous haunted 
-                locations, share personal experiences, and uncover 
-                the secrets behind paranormal hotspots.
-            </p>
-            <h2>hunting,paranormal,stories</h2>
-            <img class="LOGOFORM" src="/alexSmith.jpg" alt="LOGO">
+          <h1>{{formName}}</h1>
+          <p>{{formDesc}}</p>
+          <h2>{{tags}}</h2>
+          <img class="LOGOFORM" src="{{profilePic}}" alt="LOGO">
         </div>
       </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <div class="formbtn">
-        <div class="formbtn-side">
-            <h1>Sophia Garcia</h1>
-            <h2>sophia.garcia@example.com</h2>
-            <p>Curious explorer of the 
-              unexplained, ready to 
-              delve into the world of mysteries.
-            </p>
-        </div>
-        <div class="formbtText">
-            <h1>Psychic Readings</h1>
-            <p>Connect with others interested in psychic 
-              phenomena, share experiences with readings, and 
-              explore the realms of intuition and 
-              extrasensory perception.
-            </p>
-            <h2>hunting,paranormal,stories</h2>
-            <img class="LOGOFORM" src="/spophiaGarcia.jpg" alt="LOGO">
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <div class="formbtn">
-        <div class="formbtn-side">
-            <h1>Emily Davis</h1>
-            <h2>emily.davis@example.com</h2>
-            <p>Passionate about the 
-              paranormal and eager to 
-              share experiences.
-            </p>
-        </div>
-        <div class="formbtText">
-            <h1>UFO Sightings</h1>
-            <p>Dive into conversations about unidentified flying 
-              objects, analyze sighting reports, and speculate 
-              about the possibility of alien contact.
-            </p>
-            <h2>hunting,paranormal,stories</h2>
-            <img class="LOGOFORM" src="/emilyDavis.jpg" alt="LOGO">
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <div class="formbtn">
-        <div class="formbtn-side">
-            <h1>James Thompson</h1>
-            <h2>james@example.com</h2>
-            <p>Seeking answers in the 
-              realm of the supernatural,
-              open to discussing.
-            </p>
-        </div>
-        <div class="formbtText">
-            <h1>Ghost Stories</h1>
-            <p>Gather around the virtual campfire to exchange 
-              ghostly tales, discuss supernatural encounters, 
-              and explore the mysteries of the spirit world.
-            </p>
-            <h2>hunting,paranormal,stories</h2>
-            <img class="LOGOFORM" src="/jamesThomson.jpg" alt="LOGO">
-        </div>
-      </div>
-    </div>
+    {{/each}}
   </div>
 </div>
 

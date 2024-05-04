@@ -45,17 +45,52 @@ const forms = [
         "formDesc": "Gather around the virtual campfire to exchange ghostly tales, discuss supernatural encounters, and explore the mysteries of the spirit world.",
         "tags": "hunting,paranormal,stories"
     },
+    {
+        "id": 5,
+        "name": "Isabella Johnson",
+        "email": "isabella.johnson@example.com",
+        "description": "Passionate ghost hunter with a keen interest in paranormal investigations.",
+        "profilePic": "/Isabella.jpg",
+        "formName": "Ghost Hunting Expeditions",
+        "formDesc": "Embark on ghost hunting expeditions, explore haunted locations, and document paranormal activity.",
+        "tags": "ghost-hunting,paranormal,investigations"
+    },
+    {
+        "id": 6,
+        "name": "Nathan Roberts",
+        "email": "nathan.roberts@example.com",
+        "description": "Enthusiast of paranormal events and seeker of unexplained phenomena.",
+        "profilePic": "/Nathan.jpg",
+        "formName": "Paranormal Conferences",
+        "formDesc": "Attend paranormal conferences, participate in discussions, and learn from experts in the field.",
+        "tags": "paranormal-events,conferences,phenomena"
+    },
+    {
+        "id": 7,
+        "name": "Olivia White",
+        "email": "olivia.white@example.com",
+        "description": "Dedicated to uncovering the truth behind paranormal mysteries.",
+        "profilePic": "/Olivia.jpg",
+        "formName": "Haunted History Tours",
+        "formDesc": "Join haunted history tours, explore haunted landmarks, and hear chilling tales of ghostly encounters.",
+        "tags": "haunted-tours,history,ghost-stories"
+    }
 ];
 
 router.get("/", (req, res) => {
-    res.render("form")
+    res.render("form", { forms: forms });
 });
 
 router.get("/:id", (req, res) => {
     const id = req.params.id;
     if (!isNaN(id)) {
         const index = parseInt(id);
-        res.render("form-search", { id: id });
+        let fvalue = forms[id - 1];
+        if (fvalue) {
+            res.render("form-search", { form: fvalue });
+        } else {
+            res.status("404").render("error", { error: "User not found." });
+        }
     } else {
         console.error("Invalid ID:", id);
         res.status(400).render("error", { error: "Invalid Id." });
