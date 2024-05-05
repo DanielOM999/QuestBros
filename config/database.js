@@ -5,8 +5,8 @@ const sequelize = new Sequelize({
     dialect: 'postgres',
     host: 'localhost',
     port: "5432",
-    username: "node",
-    password: process.env.SERVER_LOGIN,
+    username: "postgres",
+    password: "563298_7syv",
     database: "ghosthunting",
     pool: {
         max: 5,
