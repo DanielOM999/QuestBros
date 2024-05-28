@@ -21,7 +21,7 @@ const forms = [
     },
     { "id": 2, 
         "name": "Sophia Garcia", 
-        "email": "sophia.garcia@example.com", 
+        "email": "alex.smith@example.com", 
         "description": "Curious explorer of the unexplained, ready to delve into the world of mysteries.",
         "profilePic": "/spophiaGarcia.jpg",
         "formName": "Psychic Readings",
