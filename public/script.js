@@ -1,3 +1,9 @@
+let currentPage = 1;
+let allFormsLoaded = false;
+const pageSize = 4;
+const formsContainer = document.getElementById('formsContainer');
+const loadingIndicator = document.getElementById('loadingIndicator');
+
 document.addEventListener("DOMContentLoaded", function() {
     var stickyImage = document.querySelector(".sticky-image");
     var footer = document.getElementById("myFooter");
@@ -154,32 +160,91 @@ if (inputFile) {
     }
 }
 
-let nShow = 4;
+function showData(page) {
+    fetch(`/form/forms?page=${page}&size=${pageSize}`)
+    .then(response => response.json())
+    .then(data => {
+        const formsContainer = document.getElementById('formsContainer');
+        if (data.length < pageSize) {
+            allFormsLoaded = true;
+        }
 
-function showMore() {
-    nShow += 4;
-    hideForms();
+        data.forEach(form => {
+            const formItem = document.createElement('div');
+            formItem.className = 'col-12 formItem';
+
+            const formBtn = document.createElement('div');
+            formBtn.className = 'formbtn';
+            formBtn.setAttribute('onclick', `window.location='/form/${form.id}'`);
+
+            const formBtnSide = document.createElement('div');
+            formBtnSide.className = 'formbtn-side';
+
+            const h1 = document.createElement('h1');
+            h1.textContent = form.name;
+
+            const h2 = document.createElement('h2');
+            h2.textContent = form.email;
+
+            const p = document.createElement('p');
+            p.textContent = form.description;
+
+            formBtnSide.appendChild(h1);
+            formBtnSide.appendChild(h2);
+            formBtnSide.appendChild(p);
+
+            const formBtText = document.createElement('div');
+            formBtText.className = 'formbtText';
+
+            const h1Form = document.createElement('h1');
+            h1Form.textContent = form.formName;
+
+            const pForm = document.createElement('p');
+            pForm.textContent = form.formDesc;
+
+            const h2Tags = document.createElement('h2');
+            h2Tags.textContent = form.tags;
+
+            const img = document.createElement('img');
+            img.className = 'LOGOFORM';
+            img.src = form.profilePic;
+            img.alt = 'LOGO';
+
+            formBtText.appendChild(h1Form);
+            formBtText.appendChild(pForm);
+            formBtText.appendChild(h2Tags);
+            formBtText.appendChild(img);
+
+            formBtn.appendChild(formBtnSide);
+            formBtn.appendChild(formBtText);
+
+            formItem.appendChild(formBtn);
+
+            formsContainer.appendChild(formItem);
+        });
+
+        loadingIndicator.style.display = 'none';
+    })
+    .catch(error => {
+        console.error('Error fetching forms:', error);
+        loadingIndicator.style.display = 'none';
+    });
 }
 
-function hideForms() {
-    var formItems = document.getElementsByClassName('formItem');
-    var showMoreBtn = document.getElementById('showMoreBtn');
-    console.log(formItems.length);
-    console.log(nShow);
-
-    for (var i = 0; i < formItems.length; i++) {
-        if (i >= nShow) {
-            formItems[i].style.display = 'none';
-        } else if (nShow >= formItems.length) {
-            showMoreBtn.style.display = "none";
-            formItems[i].style.display = 'block';
-        }
-        else {
-            formItems[i].style.display = 'block';
-        }
+function loadMoreForms() {
+    if (!allFormsLoaded && loadingIndicator) {
+        loadingIndicator.style.display = 'block';
+        showData(currentPage);
+        currentPage++;
     }
 }
 
 window.onload = function() {
-    hideForms();
+    loadMoreForms();
 };
+
+window.addEventListener('scroll', () => {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1) {
+        loadMoreForms();
+    }
+});

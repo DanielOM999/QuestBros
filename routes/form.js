@@ -109,7 +109,18 @@ const forms = [
 ];
 
 router.get("/", (req, res) => {
-    res.render("form", { forms: forms });
+    // res.render("form", { forms: forms });
+    res.render("form");
+});
+
+router.get("/forms", (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const size = parseInt(req.query.size) || 4;
+    const startIndex = (page - 1) * size;
+    const endIndex = startIndex + size;
+
+    const paginatedForms = forms.slice(startIndex, endIndex);
+    res.json(paginatedForms);
 });
 
 router.get("/:id", (req, res) => {

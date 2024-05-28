@@ -448,6 +448,40 @@ html {
     margin-left: 33.5vw;
 }
 
+.renderer {
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+    border-radius: 2vw;
+    background: linear-gradient(to right, transparent 50%, blue 50%);
+    width: 87vw;
+    height: 20vw;
+    display: inline-block;
+    cursor: pointer;
+    animation: fadeInOut 1ms infinite;
+}
+
+.skeleton {
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+    border-radius: 2vw;
+    background: #2C2C2C;
+    width: 87vw;
+    height: 20vw;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.skeleton-side {
+    display: flex;
+    background: #1E1E1E;
+    border-radius: 2vw;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 30vw;
+    height: 20vw;
+    display: inline-block;
+}
+
 .LOGOFORM {
     position: absolute;
     width: 4vw;
@@ -803,6 +837,16 @@ html {
     min-width: 10vw;
     border: none;
     color: #ccc;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 1;
+    } 50% {
+        opacity: 0;
+    } 100% {
+        opacity: 1;
+    }
 }
 
 @media (max-width: 1200px) {

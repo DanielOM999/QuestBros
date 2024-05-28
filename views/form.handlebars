@@ -68,24 +68,10 @@
 <div class="divider3"></div>
 
 <div class="container">
-  <div class="row">
-    {{#each forms}}
-    <div class="col-12 formItem">
-      <div class="formbtn" onclick="window.location='/form/{{id}}'">
-        <div class="formbtn-side">
-          <h1>{{name}}</h1>
-          <h2>{{email}}</h2>
-          <p>{{description}}</p>
-        </div>
-        <div class="formbtText">
-          <h1>{{formName}}</h1>
-          <p>{{formDesc}}</p>
-          <h2>{{tags}}</h2>
-          <img class="LOGOFORM" src="{{profilePic}}" alt="LOGO">
-        </div>
-      </div>
+  <div class="row" id="formsContainer"></div>
+  <div id="loadingIndicator">
+    <div class="skeleton">
+        <div class="skeleton-side"></div>
     </div>
-    {{/each}}
   </div>
-  <button id="showMoreBtn" onclick="showMore()">Show More</button>
 </div>
