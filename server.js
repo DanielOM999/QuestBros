@@ -4,6 +4,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const session = require("express-session")
 const passport = require("passport")
+const synchronizeDatabase = require('./syncer');
 const app = express();
 
 const hbs = exphbs.create({
@@ -21,6 +22,8 @@ const hbs = exphbs.create({
 
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
+
+synchronizeDatabase()
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/Images", express.static("./Images"))
