@@ -1,4 +1,27 @@
 <div class="container mt-5">
-    <h1>Hello World</h1>
+    {{#each form}}
+        <h1> {{this.id}}. <strong>{{this.name}}</strong></h1>
+        <ul>
+            <li>
+                <p>{{this.email}}</p>
+            </li>
+            <li>
+                <p>{{this.description}}</p>
+            </li>
+            <li>
+                <p>{{this.profilePic}}</p>
+            </li>
+            <li>
+                <p>{{this.formName}}</p>
+            </li>
+            <li>
+                <p>{{this.formDesc}}</p>
+            </li>
+            <li>
+                <p>{{this.tags}}</p>
+            </li>
+        </ul>
+        </br>
+    {{/each}}
 </div>
 <div class="divider2"></div>
