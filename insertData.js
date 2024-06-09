@@ -27,23 +27,48 @@ const formsL = [
     { name: 'Haunted History Tours', description: "Join haunted history tours, explore haunted landmarks, and hear chilling tales of ghostly encounters.", tags: 'haunted-tours,history,ghost-stories' },
     { name: 'Supernatural Investigations', description: "Conduct investigations into supernatural phenomena, analyze evidence, and seek answers to the unexplained.", tags: 'supernatural,investigations,paranormal' },
     { name: 'Cryptid Encounters', description: "Discuss encounters with cryptids, share sightings, and explore the lore surrounding mysterious creatures.", tags: 'cryptids,creatures,mysteries' },
-    { name: 'Haunted Explorations', description: "Embark on haunted explorations, visit eerie locations, and document supernatural phenomena.", tags: 'haunted,explorations,paranormal' }
+    { name: 'Haunted Explorations', description: "Embark on haunted explorations, visit eerie locations, and document supernatural phenomena.", tags: 'haunted,explorations,paranormal' },
+    { name: 'Witchcraft and Occult Studies', description: "Delve into the realms of witchcraft and the occult, exchange knowledge on spells, rituals, and mystical practices.", tags: 'witchcraft,occult,rituals' }
 ];
 
 async function relations(users, formsL) {
-    // for (let index in users) {
-    //     let user = await userTabel.findOne({ where: { username: users[index].username }});
-    //     let form = await formTabel.findOne({ where: { name: formsL[index].name }});
-    //     if (user && form) {
-    //         await user.addForm(form);
-    //     }
-    // }
-    let user = await userTabel.findOne({ where: { username: 'Alex Smith' }});
-    let form = await formTabel.findOne({ where: { name: 'Haunted Locations' }});
-    console.log(Object.keys(formTabel.__proto__));
-    form.userId = user.id;
-    await form.save()
-    console.log("SUCESS");
+    try {
+        for (let i = 0; i < users.length; i++) {
+            let user = await userTabel.findOne({ where: { username: users[i].username }});
+            if (user) {
+                let form = await formTabel.findOne({ where: { name: formsL[i].name }});
+                console.log(`form ${i}:\n ${formsL[i].name} : ${form.name}\n`)
+                if (form) {
+                    form.userId = user.id;
+                    await form.save();
+                    console.log(`SUCCESS: Linked user ${user.username} with form ${form.name}`);
+                } else {
+                    console.log(`ERROR: Form ${formsL[i].name} not found`);
+                }
+            } else {
+                console.log(`ERROR: User ${users[i].username} not found`);
+            }
+        }
+
+        let user = await userTabel.findOne({ where: { username: users[0].username }});
+        if (user) {
+            console.log(formsL.length)
+            let form = await formTabel.findOne({ where: { name: formsL[formsL.length - 1].name }});
+            if (form) {
+                console.log("HEI")
+                form.userId = user.id;
+                await form.save();
+                console.log(`SUCCESS: Linked user ${user.username} with form ${form.name}`);
+            } else {
+                console.log(`ERROR: Form ${formsL[i].name} not found`);
+            }
+        } else {
+            console.log(`ERROR: User ${users[i].username} not found`);
+        }
+
+    } catch (error) {
+        console.error(`ERROR: ${error.message}`);
+    }
 }
 
 
@@ -86,7 +111,7 @@ const insertData = async () => {
         await transaction.rollback();
         console.error('Error inserting data:', error);
     }
-    relations()
+    relations(users, formsL)
 };
 
 insertData();
