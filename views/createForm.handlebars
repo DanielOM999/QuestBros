@@ -1,0 +1,21 @@
+<body>
+    <h1>Create a Form!</h1>
+    <div class="container">
+        <div class="cta-form">
+            <h2>Fill out the form!</h2> 
+            <p>In this section, you can create a new form by filling out the fields below. Enter the form name, description, and relevant tags.</p>
+        </div>
+        <form action="/form/create" method="POST" class="form">
+            <input type="text" name="formname" placeholder="Enter form name" class="form__input" id="formname" required />
+            <label for="formname" class="form__label">Form Name</label>
+
+            <input type="text" name="formdescription" placeholder="Enter form description" class="form__input" id="formdescription" required />
+            <label for="formdescription" class="form__label">Form Description</label>
+
+            <input type="text" name="formtags" placeholder="Enter form tags" class="form__input" id="formtags" required />
+            <label for="formtags" class="form__label">Form Tags</label>
+
+            <button type="submit" class="form__button">Enter</button>
+        </form>
+    </div>
+</body>

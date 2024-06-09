@@ -1,6 +1,7 @@
 const express = require("express");
 let crypto = require("crypto");
 let passport = require("passport");
+const bodyParser = require("body-parser");
 let LocalStrategy = require("passport-local");
 const userTabel = require("../models/userTabel");
 const multer = require("multer");
@@ -9,6 +10,8 @@ const fs = require('fs');
 const formTabel = require("../models/formTabel");
 const _ = require('lodash');
 const router = express.Router();
+
+router.use(bodyParser.urlencoded({ extended: false }));
 
 async function getUsersWithFormsData() {
     try {
@@ -43,10 +46,7 @@ async function getUsersWithFormsData() {
     }
 }
 
-
-
 router.get("/", (req, res) => {
-    // res.render("form", { forms: forms });
     res.render("form");
 });
 
@@ -59,6 +59,27 @@ router.get("/forms", async (req, res) => {
 
     const paginatedForms = formsData.slice(startIndex, endIndex);
     res.json(paginatedForms);
+});
+
+router.get("/create", (req, res) => {
+    if(req.user) {
+        res.render("createForm", { layout: "CreateForm" });
+    }else {
+        res.redirect("/users/req")
+    }
+});
+
+router.post("/create", async (req, res) => {
+    const { formname, formdescription, formtags } = req.body;
+
+    if (!formname || !formdescription || !formtags) {
+        return res.status(400).send("All fields are required!");
+    }
+
+
+
+    res.redirect("/form")
+    console.log(formname, formdescription, formtags);
 });
 
 router.get("/:id", async (req, res) => {
