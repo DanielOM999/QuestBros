@@ -1,26 +1,30 @@
-const { Sequelize, DataType } = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 const db = require("../config/database");
 
-const formTabel = db.define(
-  "formTabel", 
+const formTable = db.define(
+  "formTable",
   {
     name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
     },
     description: {
-        type: Sequelize.TEXT,
-        allowNull: false
+      type: DataTypes.TEXT,
+      allowNull: false
     },
     tags: {
-        type: Sequelize.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     }
   },
   {
-    tableName: "formTabel"
+    tableName: "formTable"
   }
 );
 
-  module.exports = formTabel;
+module.exports = formTable;

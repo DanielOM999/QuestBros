@@ -1,9 +1,8 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const db = require("../config/database");
-const crypto = require("crypto");
 
 const userTable = db.define(
-  "userTable", 
+  "userTable",
   {
     username: {
       type: DataTypes.STRING,

@@ -1,10 +1,11 @@
+// models/index.js
 const { Sequelize, DataTypes } = require('sequelize');
 const db = require("../config/database");
-const userTabel = require("./userTabel");
-const formTabel = require("./formTabel");
+const userTable = require("./userTabel");
+const formTable = require("./formTabel");
 
+// Define associations
+userTable.hasMany(formTable, { onDelete: "CASCADE", as: 'forms', foreignKey: 'userId' });
+formTable.belongsTo(userTable, { foreignKey: 'userId' });
 
-userTabel.hasMany(formTabel, { as: 'forms', foreignKey: 'userId' });
-formTabel.belongsTo(userTabel, { foreignKey: 'userId' });
-
-module.exports = { db, userTabel, formTabel };
+module.exports = { db, userTable, formTable };

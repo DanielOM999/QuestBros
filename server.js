@@ -54,10 +54,12 @@ app.get("/add", (req, res) => res.render("add"));
 const userRouter = require("./routes/users");
 const formRouter = require("./routes/form");
 const testRouter = require("./routes/test");
+const defultRouter = require("./routes/defult");
 
 app.use("/users", userRouter);
 app.use("/form", formRouter);
 app.use("/test", testRouter);
+app.use("/insert", defultRouter);
 
 const PORT = process.env.PORT || 3000;
 
