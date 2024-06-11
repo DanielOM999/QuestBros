@@ -1,5 +1,6 @@
 const express = require("express");
 let crypto = require("crypto");
+const { Sequelize } = require("sequelize");
 let passport = require("passport");
 const bodyParser = require("body-parser");
 let LocalStrategy = require("passport-local");
@@ -8,6 +9,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require('fs');
 const formTabel = require("../models/formTabel");
+const db = require('../config/database');
 const _ = require('lodash');
 const router = express.Router();
 
@@ -76,10 +78,40 @@ router.post("/create", async (req, res) => {
         return res.status(400).send("All fields are required!");
     }
 
+    const transaction = await db.transaction();
+    try {
+        await formTabel.create({
+            name: formname,
+            description: formdescription,
+            tags: formtags
+        }, { transaction });
+        await transaction.commit();
+        console.log(`\nInserted: ${formname}\n`);
+    } catch (error) {
+        await transaction.rollback();
+        console.error('ERROR: ', error);
+    }
 
+    try {
+        let user = await userTabel.findOne({ where: { username: req.user.username }});
+        console.log("\nUHUH\n")
+        if (user) {
+            let form = await formTabel.findOne({ where: { name: formname }});
+            if (form) {
+                form.userId = user.id;
+                await form.save();
+                console.log(`SUCCESS: Linked user ${user.username} with form ${form.name}`);
+            } else {
+                console.log(`ERROR: Form ${formname} not found`);
+            }
+        } else {
+            console.log(`ERROR: User ${req.user.username} not found`);
+        }
+    } catch (error) {
+        console.error('ERROR: ', error)
+    }
 
     res.redirect("/form")
-    console.log(formname, formdescription, formtags);
 });
 
 router.get("/:id", async (req, res) => {

@@ -207,7 +207,11 @@ function showData(page) {
 
             const img = document.createElement('img');
             img.className = 'LOGOFORM';
-            img.src = form.profilePic;
+            if (form.profilePic) {
+                img.src = form.profilePic;
+            } else {
+                img.src = "/profile.png";
+            }
             img.alt = 'LOGO';
 
             formBtText.appendChild(h1Form);
