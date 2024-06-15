@@ -121,7 +121,7 @@ router.get("/:id", async (req, res) => {
         const index = parseInt(id);
         let fvalue = formsData.find(form => form.id === index);
         if (fvalue) {
-            res.render("form-search", { form: fvalue });
+            res.render("chat", { layout: 'chat', form: fvalue });
         } else {
             res.status("404").render("error", { error: "User not found." });
         }
