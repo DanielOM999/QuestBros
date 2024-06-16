@@ -114,20 +114,268 @@ router.post("/create", async (req, res) => {
     res.redirect("/form")
 });
 
-router.get("/:id", async (req, res) => {
-    const formsData = await getUsersWithFormsData();
+const chats = [
+    {
+      "formid": "283",
+      "username": "Nathan",
+      "message": "I recently visited an abandoned asylum rumored to be haunted. We captured some eerie EVP recordings that sounded like faint whispers. Has anyone experienced something similar on their haunted explorations?"
+    },
+    {
+      "formid": "283",
+      "username": "Robert",
+      "message": "Yes, Nathan! I once recorded similar whispers at an old church. It's fascinating and a bit creepy. What equipment did you use?"
+    },
+    {
+      "formid": "283",
+      "username": "Nathan",
+      "message": "We used a digital recorder and an EMF detector. The whispers were so clear! The asylum had a very heavy atmosphere. Have you tried any other haunted locations?"
+    },
+    {
+      "formid": "283",
+      "username": "Robert",
+      "message": "I've also explored a haunted lighthouse. The EMF readings were off the charts, and I felt a sudden drop in temperature. Haunted explorations never cease to amaze!"
+    },
+    {
+      "formid": "284",
+      "username": "Nathan",
+      "message": "I've been studying ancient texts on witchcraft and found a fascinating ritual for protection against negative energies. Has anyone tried similar rituals and noticed any significant effects?"
+    },
+    {
+      "formid": "284",
+      "username": "Robert",
+      "message": "I have, Nathan. I performed a protection ritual before a major life event, and I felt a noticeable shift in my energy. Which text did you reference?"
+    },
+    {
+      "formid": "284",
+      "username": "Nathan",
+      "message": "I used 'The Key of Solomon.' The ritual was intricate but felt very empowering. What other rituals have you tried?"
+    },
+    {
+      "formid": "284",
+      "username": "Robert",
+      "message": "I've tried a few love spells and a banishing ritual from 'The Witches' Grimoire.' They were quite effective. The history and practice of witchcraft are so deep and fascinating."
+    },
+    {
+      "formid": "274",
+      "username": "Robert",
+      "message": "My recent visit to the Eastern State Penitentiary was chilling. I saw shadows moving in the cells and heard faint voices. Anyone else had a spooky encounter at a famous haunted location?"
+    },
+    {
+      "formid": "274",
+      "username": "Nathan",
+      "message": "I visited the Winchester Mystery House and experienced something similar. The house felt alive with energy. What other haunted spots have you explored?"
+    },
+    {
+      "formid": "274",
+      "username": "Robert",
+      "message": "I've also been to the Myrtles Plantation. The air was thick with tension, and I saw an apparition of a woman in old-fashioned clothing. These places are incredibly eerie."
+    },
+    {
+      "formid": "274",
+      "username": "Nathan",
+      "message": "That's amazing, Robert! I felt the same at the Stanley Hotel. The ghost tour guide shared some unbelievable stories. Haunted locations have such rich histories."
+    },
+    {
+      "formid": "275",
+      "username": "Nathan",
+      "message": "I had a psychic reading that accurately predicted major events in my life. It was a mind-blowing experience. Have others had similarly impactful readings?"
+    },
+    {
+      "formid": "275",
+      "username": "Robert",
+      "message": "Yes, Nathan, I did. My reading revealed details about my career path that came true within a year. What type of reading did you have?"
+    },
+    {
+      "formid": "275",
+      "username": "Nathan",
+      "message": "I had a tarot card reading. The insights were incredibly detailed. The psychic mentioned events that seemed impossible at the time but happened later. Have you tried tarot?"
+    },
+    {
+      "formid": "275",
+      "username": "Robert",
+      "message": "I have, and the tarot readings were eerily accurate. It's amazing how much clarity they can provide. Psychic phenomena is truly fascinating."
+    },
+    {
+      "formid": "276",
+      "username": "Nathan",
+      "message": "I recently witnessed a UFO sighting in a remote area. The object moved in ways no aircraft could. Has anyone else seen something similar?"
+    },
+    {
+      "formid": "276",
+      "username": "Robert",
+      "message": "I saw strange lights in the sky while camping last month. They moved rapidly and changed direction abruptly. What did your UFO look like?"
+    },
+    {
+      "formid": "276",
+      "username": "Nathan",
+      "message": "It was a bright, disc-shaped object. It hovered silently before zooming away at an incredible speed. These sightings make you question what's really out there."
+    },
+    {
+      "formid": "276",
+      "username": "Robert",
+      "message": "Absolutely, Nathan. The lights I saw were also silent and moved in a way that defied logic. UFO phenomena are truly intriguing."
+    },
+    {
+      "formid": "277",
+      "username": "Nathan",
+      "message": "Here's a ghost story that still gives me chills: I once saw an apparition of a woman in my childhood home. She vanished as soon as I turned the lights on. Anyone else have a ghostly encounter to share?"
+    },
+    {
+      "formid": "277",
+      "username": "Robert",
+      "message": "During a late-night walk, I felt like someone was following me, but no one was there when I turned around. I later found out that the place is rumored to be haunted. Spooky!"
+    },
+    {
+      "formid": "277",
+      "username": "Nathan",
+      "message": "That's creepy, Robert! I also had an encounter at a friend's house. We heard footsteps on the stairs, but no one was there. Ghost stories are both terrifying and fascinating."
+    },
+    {
+      "formid": "277",
+      "username": "Robert",
+      "message": "Indeed, Nathan. I once stayed at a bed and breakfast that was reportedly haunted. I woke up to see a shadow figure standing at the foot of my bed. Ghostly encounters are unforgettable."
+    },
+    {
+      "formid": "278",
+      "username": "Nathan",
+      "message": "Our latest ghost hunting expedition to an old theater yielded some amazing results. We captured orbs and strange noises on our equipment. What are your best ghost hunting experiences?"
+    },
+    {
+      "formid": "278",
+      "username": "Robert",
+      "message": "I joined a ghost hunting group last week, and we visited an abandoned hospital. The EMF readings went off the charts! What tools do you find most effective during investigations?"
+    },
+    {
+      "formid": "278",
+      "username": "Nathan",
+      "message": "We rely heavily on EMF detectors and digital recorders. We also use night vision cameras to capture any anomalies. The evidence we collect is often compelling."
+    },
+    {
+      "formid": "278",
+      "username": "Robert",
+      "message": "That's impressive, Nathan. We also use similar equipment, and I find the night vision cameras particularly useful. Ghost hunting can be very rewarding with the right tools."
+    },
+    {
+      "formid": "279",
+      "username": "Robert",
+      "message": "I recently participated in a discussion panel about haunted locations at a paranormal conference. The insights shared were incredible. Who else attends these events regularly?"
+    },
+    {
+      "formid": "279",
+      "username": "Nathan",
+      "message": "I do, Robert. The last paranormal conference I attended had a session on spirit communication that was fascinating. What are the most interesting topics you've encountered at such events?"
+    },
+    {
+      "formid": "279",
+      "username": "Robert",
+      "message": "Spirit communication is definitely up there. I also enjoyed a talk on the history of haunted locations and the scientific approaches to investigating them. These conferences are a treasure trove of knowledge."
+    },
+    {
+      "formid": "279",
+      "username": "Nathan",
+      "message": "Absolutely! I attended a workshop on using technology in paranormal investigations. It was eye-opening. Paranormal conferences are a great way to learn and connect with like-minded individuals."
+    },
+    {
+      "formid": "280",
+      "username": "Nathan",
+      "message": "I joined a haunted history tour last weekend and heard some spine-chilling stories about local legends. What are your favorite haunted landmarks to visit?"
+    },
+    {
+      "formid": "280",
+      "username": "Robert",
+      "message": "Exploring the haunted castles of Europe has been on my bucket list. The history and ghost stories are so captivating. Who else enjoys these tours?"
+    },
+    {
+      "formid": "280",
+      "username": "Nathan",
+      "message": "I love them, Robert. My favorite so far has been the Tower of London. The tales of ghostly apparitions and historical events are fascinating. What other places have you visited?"
+    },
+    {
+      "formid": "280",
+      "username": "Robert",
+      "message": "I've also been to the catacombs of Paris. The atmosphere is incredibly eerie, and the stories of restless spirits are chilling. Haunted history tours are a unique way to explore the past."
+    },
+    {
+      "formid": "281",
+      "username": "Robert",
+      "message": "Analyzing audio recordings from our last investigation, we found some clear EVPs. It's amazing how much we can uncover with the right tools. What equipment do you rely on for investigations?"
+    },
+    {
+      "formid": "281",
+      "username": "Nathan",
+      "message": "We use digital recorders, EMF meters, and infrared cameras. The EVPs we capture often provide the most compelling evidence. Have you tried using spirit boxes?"
+    },
+    {
+      "formid": "281",
+      "username": "Robert",
+      "message": "Yes, Nathan. Spirit boxes have yielded some interesting results for us too. They seem to be quite effective in capturing real-time responses. What’s the most compelling evidence you've gathered?"
+    },
+    {
+      "formid": "281",
+      "username": "Nathan",
+      "message": "We once captured a full-body apparition on our infrared camera. It was a game-changer for our investigations. Supernatural phenomena never cease to amaze."
+    },
+    {
+      "formid": "282",
+      "username": "Nathan",
+      "message": "I had a cryptid encounter in the woods that I still can't explain. The creature looked like nothing I've seen before. Has anyone else had a similar experience?"
+    },
+    {
+      "formid": "282",
+      "username": "Robert",
+      "message": "I haven't seen one myself, but I've read numerous reports about Bigfoot sightings that sound quite credible. What did your encounter look like?"
+    },
+    {
+      "formid": "282",
+      "username": "Nathan",
+      "message": "It was tall, covered in dark fur, and moved incredibly fast. The encounter was brief but left a lasting impression. Cryptid stories are truly fascinating."
+    },
+    {
+      "formid": "282",
+      "username": "Robert",
+      "message": "That sounds intense, Nathan. I've always been intrigued by the Loch Ness Monster legends. Cryptids capture our imagination and challenge our understanding of the natural world."
+    }
+];
+
+router.get("/chats", async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const size = parseInt(req.query.size) || 4;
+    const startIndex = (page - 1) * size;
+    const endIndex = startIndex + size;
+
+    const paginatedForms = chats.slice(startIndex, endIndex);
+    res.json(paginatedForms);
+});
+
+router.get("/chats/:id", async (req, res) => {
     const id = req.params.id;
-    if (!isNaN(id)) {
-        const index = parseInt(id);
-        let fvalue = formsData.find(form => form.id === index);
-        if (fvalue) {
-            res.render("chat", { layout: 'chat', form: fvalue });
-        } else {
-            res.status("404").render("error", { error: "User not found." });
-        }
+    const filteredChats = chats.filter(chat => chat.formid === id);
+
+    if (filteredChats.length > 0) {
+        res.json({ messages: filteredChats, currentUser: req.user.username });
     } else {
-        console.error("Invalid ID:", id);
-        res.status(400).render("error", { error: "Invalid Id." });
+        res.status(404).json({ error: "No messages found for this form ID." });
+    }
+});
+
+router.get("/:id", async (req, res) => {
+    if(req.user) {
+        const formsData = await getUsersWithFormsData();
+        const id = req.params.id;
+        if (!isNaN(id)) {
+            const index = parseInt(id);
+            let fvalue = formsData.find(form => form.id === index);
+            if (fvalue) {
+                res.render("chat", { layout: 'chat', form: fvalue });
+            } else {
+                res.status("404").render("error", { error: "User not found." });
+            }
+        } else {
+            console.error("Invalid ID:", id);
+            res.status(400).render("error", { error: "Invalid Id." });
+        }
+    }else {
+        res.redirect("/users/req")
     }
 });
 

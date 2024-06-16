@@ -60,7 +60,61 @@ emojiSearch.addEventListener("keyup", e => {
     });
 });
 
+function displayMessages(messages, currentUser) {
+    const container = document.getElementById('container');
+
+    messages.forEach(message => {
+        const div2 = document.createElement('div');
+        div2.className = 'col-12 col-md-6 message';
+
+        if (message.username === currentUser) {
+            div2.classList.add('right');
+        } else {
+            div2.classList.add('left');
+        }
+
+        const tempContainer = document.createElement('div');
+        tempContainer.innerHTML = message.message;
+
+        tempContainer.childNodes.forEach(node => {
+            if (node.nodeName === '#text') {
+                const p2 = document.createElement('p');
+                p2.innerHTML = node.textContent.replace(/[\r\n]+/gm, "<br>");
+                div2.appendChild(p2);
+            } else if (node.nodeName === 'IMG') {
+                const img = document.createElement('img');
+                img.src = node.src;
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+                div2.appendChild(img);
+            }
+        });
+
+        container.appendChild(div2);
+    });
+}
+
+async function fetchChatMessages(formid) {
+    try {
+        const response = await fetch(`/form/chats/${formid}`);
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        const messages = data.messages;
+        const currentUser = data.currentUser;
+        displayMessages(messages, currentUser);
+    } catch (error) {
+        console.error("Failed to fetch messages:", error);
+    }
+}
+
 window.onload = function() {
+    const pathParts = window.location.pathname.split('/');
+    const formid = pathParts[pathParts.length - 1];
+    if (formid) {
+        fetchChatMessages(formid);
+    }
     $('html, body').animate({
         scrollTop: $(".chat-input").offset().top
         }, 0);
