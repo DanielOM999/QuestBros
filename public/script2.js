@@ -1,4 +1,7 @@
 let scrolled = false;
+let formid;
+let currentUser;
+let currentUserPic;
 
 let messages = ["Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam, illum.", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit quas nemo fugit ea, quod eum. Tempora iste suscipit, dolore praesentium hic, fugiat in autem ducimus quae doloremque aliquam eum a fuga sunt natus, atque accusantium placeat assumenda dicta nostrum quia mollitia. Aperiam numquam assumenda reprehenderit, eos consequatur aliquam eligendi itaque dolore est sunt in? Amet fuga voluptate minus voluptas quis repellendus praesentium odio, facere dolorum odit ab consequuntur sit accusantium non ipsa hic quia ullam accusamus fugit numquam aut reiciendis? Natus amet repellendus, nisi aut vel impedit architecto perferendis quibusdam soluta numquam ad inventore voluptas rerum laboriosam quis. Fugiat, fugit!", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum, velit! Ipsum quidem quia quod, dicta tempore exercitationem facilis minus doloribus.", "Lorem, ipsum dolor sit amet"];
 
@@ -60,6 +63,17 @@ emojiSearch.addEventListener("keyup", e => {
     });
 });
 
+function formatImagePath(path) {
+    // Replace backslashes with forward slashes
+    const normalizedPath = path.replace(/\\/g, '/');
+    
+    // Ensure the path starts with a forward slash
+    if (!normalizedPath.startsWith('/')) {
+        return '/' + normalizedPath;
+    }
+    return normalizedPath;
+}
+
 function displayMessages(messages, currentUser) {
     const container = document.getElementById('container');
 
@@ -72,6 +86,14 @@ function displayMessages(messages, currentUser) {
         } else {
             div2.classList.add('left');
         }
+
+        if (!message.profilePic) {
+            message.profilePic = (message.username === currentUser) ? currentUserPic : "/profile.png";
+        }
+
+        const formattedProfilePic = formatImagePath(message.profilePic);
+        console.log(formattedProfilePic);
+        div2.style.setProperty('--profile-pic-url', `url('${formattedProfilePic}')`);
 
         const tempContainer = document.createElement('div');
         tempContainer.innerHTML = message.message;
@@ -92,7 +114,31 @@ function displayMessages(messages, currentUser) {
 
         container.appendChild(div2);
     });
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .right::after, .left::after {
+            content: "";
+            position: absolute;
+            top: -25px;
+            width: 50px;
+            height: 50px;
+            background-size: cover;
+            border-radius: 50%;
+        }
+        .right::after {
+            right: -60px;
+            background-image: var(--profile-pic-url);
+        }
+        .left::after {
+            left: -60px;
+            background-image: var(--profile-pic-url);
+        }
+    `;
+    document.head.appendChild(style);
 }
+
+
 
 async function fetchChatMessages(formid) {
     try {
@@ -102,8 +148,9 @@ async function fetchChatMessages(formid) {
         }
         const data = await response.json();
         const messages = data.messages;
-        const currentUser = data.currentUser;
-        displayMessages(messages, currentUser);
+        currentUser = data.currentUser;
+        currentUserPic = data.currentUserPic;
+        displayMessages(messages, currentUser, currentUserPic);
     } catch (error) {
         console.error("Failed to fetch messages:", error);
     }
@@ -111,7 +158,7 @@ async function fetchChatMessages(formid) {
 
 window.onload = function() {
     const pathParts = window.location.pathname.split('/');
-    const formid = pathParts[pathParts.length - 1];
+    formid = pathParts[pathParts.length - 1];
     if (formid) {
         fetchChatMessages(formid);
     }
@@ -213,35 +260,113 @@ contentTarget.addEventListener('paste', (e) => {
 
 const isWhitespaceString = str => !str.replace(/\s/g, '').length
 
+const socket = new WebSocket('ws://localhost:8082');
+
+socket.onmessage = (event) => {
+    const messages = JSON.parse(event.data);
+    var div2 = document.createElement('div');
+    div2.className = 'col-12 col-md-6 message';
+    if (messages.username === currentUser) {
+        div2.classList.add('right');
+    } else {
+        div2.classList.add('left');
+    }
+
+    if (!messages.profilePic) {
+        messages.profilePic = (messages.username === currentUser) ? currentUserPic : "/profile.png";
+    }
+
+    const formattedProfilePic = formatImagePath(messages.profilePic);
+    console.log(formattedProfilePic);
+    div2.style.setProperty('--profile-pic-url', `url('${formattedProfilePic}')`);
+
+    var tempContainer = document.createElement('div');
+    tempContainer.innerHTML = messages.message;
+
+    tempContainer.childNodes.forEach(node => {
+        if (node.nodeName === '#text') {
+            var p2 = document.createElement('p');
+            p2.innerHTML = node.textContent.replace(/[\r\n]+/gm, "<br>");
+            div2.appendChild(p2);
+        } else if (node.nodeName === 'IMG') {
+            var img = document.createElement('img');
+            img.src = node.src;
+            img.style.maxWidth = '100%';
+            img.style.height = 'auto';
+            div2.appendChild(img);
+        }
+    });
+
+    var container = document.getElementById('container');
+    container.appendChild(div2);
+    document.getElementById("m-in").innerHTML = "";
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .right::after, .left::after {
+            content: "";
+            position: absolute;
+            top: -25px;
+            width: 50px;
+            height: 50px;
+            background-size: cover;
+            border-radius: 50%;
+        }
+        .right::after {
+            right: -60px;
+            background-image: var(--profile-pic-url);
+        }
+        .left::after {
+            left: -60px;
+            background-image: var(--profile-pic-url);
+        }
+    `;
+    document.head.appendChild(style);
+} 
+
 function sendMessage() {
     let messageContent = document.getElementById("m-in").innerHTML;
-
     if (messageContent.trim() !== '') {
-        var div2 = document.createElement('div');
-        div2.className = 'col-12 col-md-6 message right';
+        const message = {
+            formid: formid,
+            username: currentUser,
+            message: messageContent
+        };
+        socket.send(JSON.stringify(message));
 
-        var tempContainer = document.createElement('div');
-        tempContainer.innerHTML = messageContent;
-
-        tempContainer.childNodes.forEach(node => {
-            if (node.nodeName === '#text') {
-                var p2 = document.createElement('p');
-                p2.innerHTML = node.textContent.replace(/[\r\n]+/gm, "<br>");
-                div2.appendChild(p2);
-            } else if (node.nodeName === 'IMG') {
-                var img = document.createElement('img');
-                img.src = node.src;
-                img.style.maxWidth = '100%';
-                img.style.height = 'auto';
-                div2.appendChild(img);
-            }
-        });
-
-        var container = document.getElementById('container');
-        container.appendChild(div2);
-        document.getElementById("m-in").innerHTML = "";
+        document.getElementById("m-in").innerText = "";
     }
 }
+
+// function sendMessage() {
+//     let messageContent = document.getElementById("m-in").innerHTML;
+
+//     if (messageContent.trim() !== '') {
+//         var div2 = document.createElement('div');
+//         div2.className = 'col-12 col-md-6 message right';
+
+//         var tempContainer = document.createElement('div');
+//         tempContainer.innerHTML = messageContent;
+
+//         tempContainer.childNodes.forEach(node => {
+//             if (node.nodeName === '#text') {
+//                 var p2 = document.createElement('p');
+//                 p2.innerHTML = node.textContent.replace(/[\r\n]+/gm, "<br>");
+//                 div2.appendChild(p2);
+//             } else if (node.nodeName === 'IMG') {
+//                 var img = document.createElement('img');
+//                 img.src = node.src;
+//                 img.style.maxWidth = '100%';
+//                 img.style.height = 'auto';
+//                 div2.appendChild(img);
+//             }
+//         });
+
+//         var container = document.getElementById('container');
+//         container.appendChild(div2);
+//         document.getElementById("m-in").innerHTML = "";
+//     }
+// }
 
 document.getElementById('videoInput').addEventListener('change', function() {
     const file = this.files[0];

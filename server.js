@@ -26,7 +26,7 @@ app.set("view engine", "handlebars");
 synchronizeDatabase()
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/Images", express.static("./Images"))
+app.use("/Images", express.static("./Images"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
