@@ -2,6 +2,7 @@ const { Sequelize } = require("sequelize");
 const db = require('./config/database');
 const userTabel = require('./models/userTabel');
 const formTabel = require('./models/formTabel');
+const chatTable = require('./models/chatTable');
 const crypto = require('crypto');
 
 const users = [
@@ -30,6 +31,46 @@ const formsL = [
     { name: 'Haunted Explorations', description: "Embark on haunted explorations, visit eerie locations, and document supernatural phenomena.", tags: 'haunted,explorations,paranormal' },
     { name: 'Witchcraft and Occult Studies', description: "Delve into the realms of witchcraft and the occult, exchange knowledge on spells, rituals, and mystical practices.", tags: 'witchcraft,occult,rituals' }
 ];
+
+async function defaultChats() {
+    const transaction = await db.transaction();
+    try {
+        const defaultChatsData = [
+            {
+                data: {
+                    formName: 'Haunted Locations',
+                    username: 'Alex Smith',
+                    message: 'Has anyone experienced anything unusual at the old mansion on Elm Street?'
+                }
+            },
+            {
+                data: {
+                    formName: 'Psychic Readings',
+                    username: 'Sophia Garcia',
+                    message: 'I had a psychic reading last week, and it was spot on! Has anyone else had a similar experience?'
+                }
+            }
+        ];
+
+        for (const chat of defaultChatsData) {
+            const form = await formTabel.findOne({ where: { name: chat.data.formName }, transaction });
+            if (form) {
+                chat.data.formid = form.id;
+                delete chat.data.formName;
+
+                await chatTable.create(chat, { transaction });
+            } else {
+                console.error(`Form ${chat.data.formName} not found`);
+            }
+        }
+
+        await transaction.commit();
+        console.log('Default chats inserted successfully');
+    } catch (error) {
+        await transaction.rollback();
+        console.error('Error inserting default chats:', error);
+    }
+}
 
 async function relations(users, formsL) {
     try {
@@ -69,6 +110,7 @@ async function relations(users, formsL) {
     } catch (error) {
         console.error(`ERROR: ${error.message}`);
     }
+    defaultChats()
 }
 
 
