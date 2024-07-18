@@ -9,6 +9,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require('fs');
 const formTabel = require("../models/formTabel");
+const chatTable = require("../models/chatTable");
 const db = require('../config/database');
 const _ = require('lodash');
 const WebSocket = require("ws");
@@ -18,38 +19,55 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 const wss = new WebSocket.Server({ port: 8082 });
 
-const messagesFilePath = path.join(__dirname, 'messages.json');
+async function appendMessage(message) {
+    const transaction = await db.transaction();
+    try {
+        if (typeof message.formid === 'string') {
+            message.formid = parseInt(message.formid, 10);
+        }
 
-function appendMessage(message) {
-  let messages = [];
-  try {
-      const messagesData = fs.readFileSync(messagesFilePath, 'utf8');
-      messages = JSON.parse(messagesData);
-  } catch (err) {
-    console.log(err);
-  }
+        if (isNaN(message.formid)) {
+            throw new Error('Invalid formid, unable to convert to integer.');
+        }
 
-  messages.push(message);
-
-  try {
-      fs.writeFileSync(messagesFilePath, JSON.stringify(messages, null, 2));
-      console.log('Message appended successfully.');
-      return true;
-  } catch (err) {
-      console.error('Error writing to messages.json:', err);
-      return false;
-  }
+        await chatTable.create({ data: message }, { transaction });
+        await transaction.commit();
+        console.log('Message appended successfully.');
+        return true;
+    } catch (err) {
+        await transaction.rollback();
+        console.error('Error writing to chatTable:', err);
+        return false;
+    }
 }
 
 wss.on('connection', (ws) => {
-  ws.on('message', (message) => {
-    appendMessage(JSON.parse(message));
-    wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) {
-            client.send(message.toString());
+    ws.on('message', async (message) => {
+        try {
+            const parsedMessage = JSON.parse(message);
+
+            // Fetch the user's profilePic from the userTabel
+            const user = await userTabel.findOne({ where: { username: parsedMessage.username } });
+            if (!user) {
+                throw new Error(`User with username ${parsedMessage.username} not found.`);
+            }
+
+            // Add the profilePic to the message
+            parsedMessage.profilePic = user.image;
+
+            // Append the message with profilePic
+            await appendMessage(parsedMessage);
+
+            // Broadcast the message with profilePic to all connected clients
+            wss.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(parsedMessage));
+                }
+            });
+        } catch (err) {
+            console.error('Error processing message:', err);
         }
     });
-  });
 });
 
 async function getUsersWithFormsData() {
@@ -151,20 +169,18 @@ router.post("/create", async (req, res) => {
     res.redirect("/form")
 });
 
-let messages = [];
-
-function getFile() {
+async function getMessages() {
     try {
-      const messagesData = fs.readFileSync(messagesFilePath, 'utf8');
-      messages = JSON.parse(messagesData);
+        const chats = await chatTable.findAll();
+        return chats.map(chat => chat.data);
     } catch (err) {
-      console.error('Error reading messages.json:', err);
+        console.error('Error reading chatTable:', err);
+        return [];
     }
 }
 
-setInterval(getFile, 1000);
-
 router.get("/chats", async (req, res) => {
+    const messages = await getMessages();
     const page = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 4;
     const startIndex = (page - 1) * size;
@@ -175,7 +191,8 @@ router.get("/chats", async (req, res) => {
 });
 
 router.get("/chats/:id", async (req, res) => {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
+    const messages = await getMessages();
     const filteredChats = messages.filter(chat => chat.formid === id);
 
     if (filteredChats.length > 0) {

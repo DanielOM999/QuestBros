@@ -38,8 +38,9 @@ async function defaultChats() {
         const defaultChatsData = [
             {
                 data: {
-                    formName: 'Haunted Locations',
-                    username: 'Alex Smith',
+                    formName: 'Haunted Explorations',
+                    username: 'Liam Wilson',
+                    profilePic: '/Liam.jpg',
                     message: 'Has anyone experienced anything unusual at the old mansion on Elm Street?'
                 }
             },
@@ -47,6 +48,7 @@ async function defaultChats() {
                 data: {
                     formName: 'Psychic Readings',
                     username: 'Sophia Garcia',
+                    profilePic: '/spophiaGarcia.jpg',
                     message: 'I had a psychic reading last week, and it was spot on! Has anyone else had a similar experience?'
                 }
             }
