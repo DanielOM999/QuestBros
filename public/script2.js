@@ -138,11 +138,14 @@ function displayMessages(messages, currentUser) {
     document.head.appendChild(style);
 }
 
-
-
 async function fetchChatMessages(formid) {
     try {
         const response = await fetch(`/form/chats/${formid}`);
+        if (response.status === 404) {
+            console.log("No chat data found, displaying empty chat.");
+            displayMessages([], null, null);
+            return;
+        }
         if (!response.ok) {
             throw new Error(`Error: ${response.status}`);
         }
@@ -261,6 +264,31 @@ contentTarget.addEventListener('paste', (e) => {
 const isWhitespaceString = str => !str.replace(/\s/g, '').length
 
 const socket = new WebSocket('ws://localhost:8082');
+
+socket.onopen = () => {
+    console.log('Connected to WebSocket server');
+
+    // Immediately send the fixed integer `1` upon connection
+    // ws.send(JSON.stringify({ formid: 1 }));
+
+    const url = new URL(window.location.href);
+
+    const pathname = url.pathname;
+
+    const match = pathname.match(/^\/form\/(\d+)$/);
+
+    if (match) {
+    const number = parseInt(match[1], 10);
+        if (!isNaN(number)) {
+            // console.log(`Extracted number: ${number}`);
+            socket.send(JSON.stringify({ chatrome: number }));
+        } else {
+            socket.send(JSON.stringify({ chatrome: -1 }));
+        }
+    } else {
+        socket.send(JSON.stringify({ chatrome: -1 }));
+    }
+};
 
 socket.onmessage = (event) => {
     const messages = JSON.parse(event.data);

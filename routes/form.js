@@ -41,29 +41,41 @@ async function appendMessage(message) {
     }
 }
 
+function generateUniqueId() {
+    // Use a timestamp and random number to generate a unique ID
+    return 'client-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+}
+
 wss.on('connection', (ws) => {
+    const clientId = generateUniqueId();
+    ws.clientId = clientId;
     ws.on('message', async (message) => {
         try {
             const parsedMessage = JSON.parse(message);
 
-            // Fetch the user's profilePic from the userTabel
-            const user = await userTabel.findOne({ where: { username: parsedMessage.username } });
-            if (!user) {
-                throw new Error(`User with username ${parsedMessage.username} not found.`);
-            }
-
-            // Add the profilePic to the message
-            parsedMessage.profilePic = user.image;
-
-            // Append the message with profilePic
-            await appendMessage(parsedMessage);
-
-            // Broadcast the message with profilePic to all connected clients
-            wss.clients.forEach(client => {
-                if (client.readyState === WebSocket.OPEN) {
-                    client.send(JSON.stringify(parsedMessage));
+            if (parsedMessage.hasOwnProperty('chatrome')) {
+                console.log(`Received message from client ${ws.clientId} with chatrome: ${parsedMessage.chatrome}`);
+            } else {
+    
+                // Fetch the user's profilePic from the userTabel
+                const user = await userTabel.findOne({ where: { username: parsedMessage.username } });
+                if (!user) {
+                    throw new Error(`User with username ${parsedMessage.username} not found.`);
                 }
-            });
+    
+                // Add the profilePic to the message
+                parsedMessage.profilePic = user.image;
+    
+                // Append the message with profilePic
+                await appendMessage(parsedMessage);
+    
+                // Broadcast the message with profilePic to all connected clients
+                wss.clients.forEach(client => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify(parsedMessage));
+                    }
+                });
+            }
         } catch (err) {
             console.error('Error processing message:', err);
         }
