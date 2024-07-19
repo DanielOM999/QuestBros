@@ -205,17 +205,19 @@ router.post("/create", async (req, res) => {
                 await form.save({ transaction });
                 console.log(`SUCCESS: Linked user ${user.username} with form ${form.name}`);
                 
+                if (user.image){
+                    profilepic1 = user.image;
+                } else {
+                    profilepic1 = "/profile.png";
+                }
+
                 // Create the default chat
                 const defaultChat = {
                     "formid": form.id,
                     "username": user.username,
-                    "profilePic": user.image,
+                    "profilePic": profilepic1,
                     "message": firstmessage
                 };
-                console.log(`\n\n${defaultChat.formid}\n`);
-                console.log(`${defaultChat.username}\n`);
-                console.log(`${defaultChat.profilePic}\n`);
-                console.log(`${defaultChat.message}\n\n`);
                 await chatTable.create({ data: defaultChat }, { transaction });
 
                 // Commit the transaction for user and chat creation
