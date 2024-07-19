@@ -35,21 +35,95 @@ const formsL = [
 async function defaultChats() {
     const transaction = await db.transaction();
     try {
+        await chatTable.destroy({ where: {}, transaction });
+
         const defaultChatsData = [
             {
-                data: {
-                    formName: 'Haunted Explorations',
-                    username: 'Liam Wilson',
-                    profilePic: '/Liam.jpg',
-                    message: 'Has anyone experienced anything unusual at the old mansion on Elm Street?'
+                "data": {
+                    "formName": "Haunted Locations",
+                    "username": "Alex Smith",
+                    "profilePic": "/alexSmith.jpg",
+                    "message": "What are some of the most chilling haunted locations you've visited?"
                 }
             },
             {
-                data: {
-                    formName: 'Psychic Readings',
-                    username: 'Sophia Garcia',
-                    profilePic: '/spophiaGarcia.jpg',
-                    message: 'I had a psychic reading last week, and it was spot on! Has anyone else had a similar experience?'
+                "data": {
+                    "formName": "Psychic Readings",
+                    "username": "Sophia Garcia",
+                    "profilePic": "/spophiaGarcia.jpg",
+                    "message": "I had a psychic reading last week, and it was spot on! Has anyone else had a similar experience?"
+                }
+            },
+            {
+                "data": {
+                    "formName": "UFO Sightings",
+                    "username": "Emily Davis",
+                    "profilePic": "/emilyDavis.jpg",
+                    "message": "Has anyone seen any UFOs recently? I had a strange sighting last night."
+                }
+            },
+            {
+                "data": {
+                    "formName": "Ghost Stories",
+                    "username": "James Thompson",
+                    "profilePic": "/jamesThomson.jpg",
+                    "message": "Do you have any spine-chilling ghost stories to share? I love hearing about new encounters!"
+                }
+            },
+            {
+                "data": {
+                    "formName": "Ghost Hunting Expeditions",
+                    "username": "Isabella Johnson",
+                    "profilePic": "/Isabella.jpg",
+                    "message": "Planning a ghost hunting expedition this weekend. Any tips for capturing good evidence?"
+                }
+            },
+            {
+                "data": {
+                    "formName": "Paranormal Conferences",
+                    "username": "Nathan Roberts",
+                    "profilePic": "/Nathan.jpg",
+                    "message": "Are there any upcoming paranormal conferences you would recommend attending?"
+                }
+            },
+            {
+                "data": {
+                    "formName": "Haunted History Tours",
+                    "username": "Olivia White",
+                    "profilePic": "/Olivia.jpg",
+                    "message": "Which haunted history tour has left a lasting impression on you?"
+                }
+            },
+            {
+                "data": {
+                    "formName": "Supernatural Investigations",
+                    "username": "Ethan Brown",
+                    "profilePic": "/Ethan.png",
+                    "message": "I'm organizing a supernatural investigation next month. What are the must-have tools for it?"
+                }
+            },
+            {
+                "data": {
+                    "formName": "Cryptid Encounters",
+                    "username": "Ava Martinez",
+                    "profilePic": "/Ava.jpg",
+                    "message": "Has anyone encountered any cryptids recently? I had a strange experience last week."
+                }
+            },
+            {
+                "data": {
+                    "formName": "Haunted Explorations",
+                    "username": "Liam Wilson",
+                    "profilePic": "/Liam.jpg",
+                    "message": "Has anyone experienced anything unusual at the old mansion on Elm Street?"
+                }
+            },
+            {
+                "data": {
+                    "formName": "Witchcraft and Occult Studies",
+                    "username": "Alex Smith",
+                    "profilePic": "/alexSmith.jpg",
+                    "message": "What are some beginner-friendly rituals or spells for someone new to witchcraft?"
                 }
             }
         ];

@@ -41,43 +41,75 @@ async function appendMessage(message) {
     }
 }
 
+const chatromeMap = {};
+
 function generateUniqueId() {
-    // Use a timestamp and random number to generate a unique ID
     return 'client-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 }
 
 wss.on('connection', (ws) => {
     const clientId = generateUniqueId();
     ws.clientId = clientId;
+    console.log(`Client connected: ${clientId}`);
+
+    let currentChatrome = null;
+
     ws.on('message', async (message) => {
         try {
             const parsedMessage = JSON.parse(message);
+            console.log('Parsed message:', parsedMessage);
 
             if (parsedMessage.hasOwnProperty('chatrome')) {
                 console.log(`Received message from client ${ws.clientId} with chatrome: ${parsedMessage.chatrome}`);
+                const chatromeValue = parsedMessage.chatrome;
+
+                if (chatromeValue !== -1) {
+                    if (!chatromeMap[chatromeValue]) {
+                        chatromeMap[chatromeValue] = [];
+                    }
+
+                    if (!chatromeMap[chatromeValue].includes(ws.clientId)) {
+                        chatromeMap[chatromeValue].push(ws.clientId);
+                    }
+
+                    currentChatrome = chatromeValue;
+                }
             } else {
-    
-                // Fetch the user's profilePic from the userTabel
+                if (!parsedMessage.username) {
+                    throw new Error('Missing username in message.');
+                }
+
                 const user = await userTabel.findOne({ where: { username: parsedMessage.username } });
                 if (!user) {
                     throw new Error(`User with username ${parsedMessage.username} not found.`);
                 }
-    
-                // Add the profilePic to the message
+
                 parsedMessage.profilePic = user.image;
-    
-                // Append the message with profilePic
+
                 await appendMessage(parsedMessage);
-    
-                // Broadcast the message with profilePic to all connected clients
-                wss.clients.forEach(client => {
-                    if (client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify(parsedMessage));
-                    }
-                });
+
+                if (currentChatrome && chatromeMap[currentChatrome]) {
+                    console.log(`Broadcasting message to chatrome ${currentChatrome}`);
+                    chatromeMap[currentChatrome].forEach(clientId => {
+                        const client = Array.from(wss.clients).find(c => c.clientId === clientId);
+                        if (client && client.readyState === WebSocket.OPEN) {
+                            client.send(JSON.stringify(parsedMessage));
+                        }
+                    });
+                }
             }
         } catch (err) {
             console.error('Error processing message:', err);
+        }
+    });
+
+    ws.on('close', () => {
+        console.log(`Client disconnected: ${ws.clientId}`);
+        if (currentChatrome && chatromeMap[currentChatrome]) {
+            chatromeMap[currentChatrome] = chatromeMap[currentChatrome].filter(clientId => clientId !== ws.clientId);
+            if (chatromeMap[currentChatrome].length === 0) {
+                delete chatromeMap[currentChatrome];
+            }
         }
     });
 });
@@ -131,54 +163,79 @@ router.get("/forms", async (req, res) => {
 });
 
 router.get("/create", (req, res) => {
-    if(req.user) {
+    if (req.user) {
         res.render("createForm", { layout: "CreateForm" });
-    }else {
-        res.redirect("/users/req")
+    } else {
+        res.redirect("/users/req");
     }
 });
 
 router.post("/create", async (req, res) => {
-    const { formname, formdescription, formtags } = req.body;
+    const { formname, formdescription, formtags, firstmessage } = req.body;
 
-    if (!formname || !formdescription || !formtags) {
+    if (!formname || !formdescription || !formtags || !firstmessage) {
         return res.status(400).send("All fields are required!");
     }
 
-    const transaction = await db.transaction();
+    let transaction;
     try {
+        // Start a new transaction
+        transaction = await db.transaction();
+
+        // Create form
         await formTabel.create({
             name: formname,
             description: formdescription,
             tags: formtags
         }, { transaction });
+
+        // Commit the transaction for form creation
         await transaction.commit();
         console.log(`\nInserted: ${formname}\n`);
-    } catch (error) {
-        await transaction.rollback();
-        console.error('ERROR: ', error);
-    }
 
-    try {
+        // Start a new transaction for subsequent operations
+        transaction = await db.transaction();
+
+        // Find user and form
         let user = await userTabel.findOne({ where: { username: req.user.username }});
-        console.log("\nUHUH\n")
         if (user) {
             let form = await formTabel.findOne({ where: { name: formname }});
             if (form) {
                 form.userId = user.id;
-                await form.save();
+                await form.save({ transaction });
                 console.log(`SUCCESS: Linked user ${user.username} with form ${form.name}`);
+                
+                // Create the default chat
+                const defaultChat = {
+                    "formid": form.id,
+                    "username": user.username,
+                    "profilePic": user.image,
+                    "message": firstmessage
+                };
+                console.log(`\n\n${defaultChat.formid}\n`);
+                console.log(`${defaultChat.username}\n`);
+                console.log(`${defaultChat.profilePic}\n`);
+                console.log(`${defaultChat.message}\n\n`);
+                await chatTable.create({ data: defaultChat }, { transaction });
+
+                // Commit the transaction for user and chat creation
+                await transaction.commit();
             } else {
                 console.log(`ERROR: Form ${formname} not found`);
+                await transaction.rollback();
             }
         } else {
             console.log(`ERROR: User ${req.user.username} not found`);
+            await transaction.rollback();
         }
     } catch (error) {
-        console.error('ERROR: ', error)
+        if (transaction) {
+            await transaction.rollback();
+        }
+        console.error('ERROR: ', error);
     }
 
-    res.redirect("/form")
+    res.redirect("/form");
 });
 
 async function getMessages() {
