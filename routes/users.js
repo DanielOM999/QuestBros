@@ -2,6 +2,8 @@ const express = require("express");
 let crypto = require("crypto");
 let passport = require("passport");
 let LocalStrategy = require("passport-local");
+const { Sequelize } = require("sequelize");
+const db = require('../config/database');
 const userTabel = require("../models/userTabel");
 const multer = require("multer");
 const path = require("path");
@@ -135,10 +137,71 @@ router.post("/uploadProfilePic", upload, async (req, res) => {
     }
 });
 
+router.post('/submitK', async (req, res) => {
+    const inputValue = req.body.input;
+
+    const username = req.user.username;
+
+    try {
+        await db.transaction(async (transaction) => {
+            const user = await userTabel.findOne({ where: { username }, transaction });
+
+            if (user) {
+                user.kontakt = inputValue;
+                await user.save({ transaction });
+            }
+        });
+
+        console.log(username, 'Submitted kontakt:', inputValue);
+        res.redirect("/users");
+    } catch (error) {
+        console.error('Error updating kontakt:', error);
+        res.status(500).send('An error occurred');
+    }
+});
+
+router.post('/submitD', async (req, res) => {
+    const inputValue = req.body.input;
+
+    const username = req.user.username;
+
+    try {
+        await db.transaction(async (transaction) => {
+            const user = await userTabel.findOne({ where: { username }, transaction });
+
+            if (user) {
+                user.description = inputValue;
+                await user.save({ transaction });
+            }
+        });
+
+        console.log(username, 'Submitted kontakt:', inputValue);
+        res.redirect("/users");
+    } catch (error) {
+        console.error('Error updating kontakt:', error);
+        res.status(500).send('An error occurred');
+    }
+});
+
 router.get("/", (req, res) => {
     try {
         if(req.user) {
             let profilePicURL;
+            let kontakt;
+            let desc
+
+            if (!req.user.kontakt) {
+                kontakt = "There is no email"
+            } else {
+                kontakt = req.user.kontakt;
+            }
+
+            if (!req.user.description) {
+                desc = "There is no description"
+            } else {
+                desc = req.user.description;
+            }
+
             const failed = req.query.failed;
             let msg = "";
             if (req.user.image) {
@@ -157,7 +220,7 @@ router.get("/", (req, res) => {
                 msg = "File must be png, jpg or gif.";
             }
             
-            res.render("userDetails", { username: req.user.username, profilePicURL: profilePicURL, message: msg });
+            res.render("userDetails", { username: req.user.username, profilePicURL: profilePicURL, message: msg, kontakt: kontakt, desc: desc });
         } else {
             res.redirect("/users/req")
         }

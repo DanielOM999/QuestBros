@@ -114,7 +114,7 @@ wss.on('connection', (ws) => {
     });
 });
 
-async function getUsersWithFormsData() {
+async function getUsersWithFormsData(searchParams = {}) {
     try {
         let users = await userTabel.findAll({
             include: [{
@@ -139,8 +139,18 @@ async function getUsersWithFormsData() {
             });
         });
 
-        // let shuffledJSON = _.shuffle(newJSON);
-        return newJSON;
+        const { search = '', tags = [] } = searchParams;
+
+        const filteredJSON = newJSON.filter(item => {
+            const searchMatch = item.formName.toLowerCase().includes(search.toLowerCase()) ||
+                                item.formDesc.toLowerCase().includes(search.toLowerCase());
+            
+            const tagsMatch = tags.length === 0 || tags.some(tag => item.tags.includes(tag));
+
+            return searchMatch && tagsMatch;
+        });
+
+        return filteredJSON;
     } catch (error) {
         console.log(`Error fetching form data: ${error}`);
         return null;
@@ -152,7 +162,9 @@ router.get("/", (req, res) => {
 });
 
 router.get("/forms", async (req, res) => {
-    const formsData = await getUsersWithFormsData();
+    const search = req.query.search || '';
+
+    const formsData = await getUsersWithFormsData({ search });
     const page = parseInt(req.query.page) || 1;
     const size = parseInt(req.query.size) || 4;
     const startIndex = (page - 1) * size;

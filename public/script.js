@@ -1,5 +1,6 @@
 let currentPage = 1;
 let allFormsLoaded = false;
+var searched = false;
 const pageSize = 4;
 const formsContainer = document.getElementById('formsContainer');
 const loadingIndicator = document.getElementById('loadingIndicator');
@@ -111,10 +112,44 @@ document.addEventListener("DOMContentLoaded", function() {
     
             if(!result.length){
                 resultbox.innerHTML = "";
+
+                formsContainer.innerHTML = '';
+                searched = false;
+                currentPage = 1;
+                allFormsLoaded = false;
             }
         }
     }
 });
+
+function search() {
+    if(inputbox.value){
+        resultbox.innerHTML = "";
+        inputbox.blur();
+        searched = true;
+        showData(inputbox.value);
+    }
+}
+
+if (inputbox) {
+    inputbox.addEventListener("keydown", function(event) {
+        // Check if the pressed key is Enter (key code 13)
+        if (event.key === "Enter") {
+            event.preventDefault();
+            search()
+        }
+    });
+}
+
+function writePopUp(swi) {
+    const wrP = document.getElementById("wrP");
+    const wrP2 = document.getElementById("wrP2");
+    if(swi == 0){
+        wrP.classList.add("write-popup2");
+    } else {
+        wrP2.classList.add("write-popup2");
+    }
+}
 
 function displayTerms(result){
     const content = result.map((list)=>{
@@ -126,7 +161,7 @@ function displayTerms(result){
 
 function selectInput(list){
     inputbox.value = list.innerHTML;
-    resultbox.innerHTML = "";
+    search()
 }
 
 function Error() {
@@ -161,82 +196,159 @@ if (inputFile) {
 }
 
 function showData(page) {
-    fetch(`/form/forms?page=${page}&size=${pageSize}`)
-    .then(response => response.json())
-    .then(data => {
-        const formsContainer = document.getElementById('formsContainer');
-        if (data.length < pageSize) {
-            allFormsLoaded = true;
-        }
-
-        data.forEach(form => {
-            const formItem = document.createElement('div');
-            formItem.className = 'col-12 formItem';
-
-            const formBtn = document.createElement('div');
-            formBtn.className = 'formbtn';
-            formBtn.setAttribute('onclick', `window.location='/form/${form.id}'`);
-
-            const formBtnSide = document.createElement('div');
-            formBtnSide.className = 'formbtn-side';
-
-            const h1 = document.createElement('h1');
-            h1.textContent = form.name;
-
-            const h2 = document.createElement('h2');
-            h2.textContent = form.email;
-
-            const p = document.createElement('p');
-            p.textContent = form.description;
-
-            formBtnSide.appendChild(h1);
-            formBtnSide.appendChild(h2);
-            formBtnSide.appendChild(p);
-
-            const formBtText = document.createElement('div');
-            formBtText.className = 'formbtText';
-
-            const h1Form = document.createElement('h1');
-            h1Form.textContent = form.formName;
-
-            const pForm = document.createElement('p');
-            pForm.textContent = form.formDesc;
-
-            const h2Tags = document.createElement('h2');
-            h2Tags.textContent = form.tags;
-
-            const img = document.createElement('img');
-            img.className = 'LOGOFORM';
-            if (form.profilePic) {
-                img.src = form.profilePic;
-            } else {
-                img.src = "/profile.png";
+    if(!searched) {
+        fetch(`/form/forms?page=${page}&size=${pageSize}`)
+        .then(response => response.json())
+        .then(data => {
+            const formsContainer = document.getElementById('formsContainer');
+            if (data.length < pageSize) {
+                allFormsLoaded = true;
             }
-            img.alt = 'LOGO';
-
-            formBtText.appendChild(h1Form);
-            formBtText.appendChild(pForm);
-            formBtText.appendChild(h2Tags);
-            formBtText.appendChild(img);
-
-            formBtn.appendChild(formBtnSide);
-            formBtn.appendChild(formBtText);
-
-            formItem.appendChild(formBtn);
-
-            formsContainer.appendChild(formItem);
+    
+            data.forEach(form => {
+                const formItem = document.createElement('div');
+                formItem.className = 'col-12 formItem';
+    
+                const formBtn = document.createElement('div');
+                formBtn.className = 'formbtn';
+                formBtn.setAttribute('onclick', `window.location='/form/${form.id}'`);
+    
+                const formBtnSide = document.createElement('div');
+                formBtnSide.className = 'formbtn-side';
+    
+                const h1 = document.createElement('h1');
+                h1.textContent = form.name;
+    
+                const h2 = document.createElement('h2');
+                h2.textContent = form.email;
+    
+                const p = document.createElement('p');
+                p.textContent = form.description;
+    
+                formBtnSide.appendChild(h1);
+                formBtnSide.appendChild(h2);
+                formBtnSide.appendChild(p);
+    
+                const formBtText = document.createElement('div');
+                formBtText.className = 'formbtText';
+    
+                const h1Form = document.createElement('h1');
+                h1Form.textContent = form.formName;
+    
+                const pForm = document.createElement('p');
+                pForm.textContent = form.formDesc;
+    
+                const h2Tags = document.createElement('h2');
+                h2Tags.textContent = form.tags;
+    
+                const img = document.createElement('img');
+                img.className = 'LOGOFORM';
+                if (form.profilePic) {
+                    img.src = form.profilePic;
+                } else {
+                    img.src = "/profile.png";
+                }
+                img.alt = 'LOGO';
+    
+                formBtText.appendChild(h1Form);
+                formBtText.appendChild(pForm);
+                formBtText.appendChild(h2Tags);
+                formBtText.appendChild(img);
+    
+                formBtn.appendChild(formBtnSide);
+                formBtn.appendChild(formBtText);
+    
+                formItem.appendChild(formBtn);
+    
+                formsContainer.appendChild(formItem);
+            });
+    
+            loadingIndicator.style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error fetching forms:', error);
+            loadingIndicator.style.display = 'none';
         });
-
-        loadingIndicator.style.display = 'none';
-    })
-    .catch(error => {
-        console.error('Error fetching forms:', error);
-        loadingIndicator.style.display = 'none';
-    });
+    } else {
+        formsContainer.innerHTML = '';
+        loadingIndicator.style.display = 'block';
+        fetch(`/form/forms?size=${20}&search=${page}`)
+        .then(response => response.json())
+        .then(data => {
+            const formsContainer = document.getElementById('formsContainer');
+            if (data.length < pageSize) {
+                allFormsLoaded = true;
+            }
+    
+            data.forEach(form => {
+                const formItem = document.createElement('div');
+                formItem.className = 'col-12 formItem';
+    
+                const formBtn = document.createElement('div');
+                formBtn.className = 'formbtn';
+                formBtn.setAttribute('onclick', `window.location='/form/${form.id}'`);
+    
+                const formBtnSide = document.createElement('div');
+                formBtnSide.className = 'formbtn-side';
+    
+                const h1 = document.createElement('h1');
+                h1.textContent = form.name;
+    
+                const h2 = document.createElement('h2');
+                h2.textContent = form.email;
+    
+                const p = document.createElement('p');
+                p.textContent = form.description;
+    
+                formBtnSide.appendChild(h1);
+                formBtnSide.appendChild(h2);
+                formBtnSide.appendChild(p);
+    
+                const formBtText = document.createElement('div');
+                formBtText.className = 'formbtText';
+    
+                const h1Form = document.createElement('h1');
+                h1Form.textContent = form.formName;
+    
+                const pForm = document.createElement('p');
+                pForm.textContent = form.formDesc;
+    
+                const h2Tags = document.createElement('h2');
+                h2Tags.textContent = form.tags;
+    
+                const img = document.createElement('img');
+                img.className = 'LOGOFORM';
+                if (form.profilePic) {
+                    img.src = form.profilePic;
+                } else {
+                    img.src = "/profile.png";
+                }
+                img.alt = 'LOGO';
+    
+                formBtText.appendChild(h1Form);
+                formBtText.appendChild(pForm);
+                formBtText.appendChild(h2Tags);
+                formBtText.appendChild(img);
+    
+                formBtn.appendChild(formBtnSide);
+                formBtn.appendChild(formBtText);
+    
+                formItem.appendChild(formBtn);
+    
+                formsContainer.appendChild(formItem);
+            });
+    
+            loadingIndicator.style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error fetching forms:', error);
+            loadingIndicator.style.display = 'none';
+        });
+    }
 }
 
 function loadMoreForms() {
-    if (!allFormsLoaded && loadingIndicator) {
+    if (!allFormsLoaded && loadingIndicator && !searched) {
         loadingIndicator.style.display = 'block';
         showData(currentPage);
         currentPage++;

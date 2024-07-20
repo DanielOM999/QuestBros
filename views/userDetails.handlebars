@@ -13,7 +13,11 @@
     <div class="card">
         <label for="input-file"><img src="{{profilePicURL}}" id="profile-pic"></label>
         <h1>{{username}}</h1>
-        <p>@{{toLowerCase username}}</p>
+        <p id="top">@{{toLowerCase username}}</p>
+        <p class="hover" onclick="writePopUp(0)">Kontakt</p>
+        <p class="undertext">{{kontakt}}</p>
+        <p class="hover" onclick="writePopUp(1)">Description</p>
+        <p id="last" class="undertext">{{desc}}</p>
         <form action="/users/uploadProfilePic" method="POST" enctype="multipart/form-data">
             <input type="file" accept="image/jpeg, image/png, image/jpg" id="input-file" name="image">
             <button class="Save" type="submit">Save</button>
@@ -23,4 +27,22 @@
             <button class="Logout" type="submit">Log out</button>
         </form>
     </div>
+</div>
+
+<div id="wrP" class="write-popup">
+  <div class="write-popup-content">
+    <form action="/users/submitK" method="POST">
+      <input type="email" name="input" placeholder="Enter your text here" class="write-popup-input">
+      <button type="submit" class="write-popup-button">Submit</button>
+    </form>
+  </div>
+</div>
+
+<div id="wrP2" class="write-popup">
+  <div class="write-popup-content">
+    <form action="/users/submitD" method="POST">
+      <input type="text" name="input" placeholder="Enter your text here2" class="write-popup-input">
+      <button type="submit" class="write-popup-button">Submit</button>
+    </form>
+  </div>
 </div>
