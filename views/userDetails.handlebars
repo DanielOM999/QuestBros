@@ -16,7 +16,7 @@
         <p id="top">@{{toLowerCase username}}</p>
         <p class="hover" onclick="writePopUp(0)">Kontakt</p>
         <p class="undertext">{{kontakt}}</p>
-        <p class="hover" onclick="writePopUp(1)">Description</p>
+        <p class="hover" onclick="writePopUp(2)">Description</p>
         <p id="last" class="undertext">{{desc}}</p>
         <form action="/users/uploadProfilePic" method="POST" enctype="multipart/form-data">
             <input type="file" accept="image/jpeg, image/png, image/jpg" id="input-file" name="image">
@@ -32,8 +32,9 @@
 <div id="wrP" class="write-popup">
   <div class="write-popup-content">
     <form action="/users/submitK" method="POST">
-      <input type="email" name="input" placeholder="Enter your text here" class="write-popup-input">
+      <input type="email" name="input" placeholder="Enter your email here" class="write-popup-input" required>
       <button type="submit" class="write-popup-button">Submit</button>
+      <button type="button" id="wrPB" onclick="writePopUp(1)" class="write-popup-button">Close</button>
     </form>
   </div>
 </div>
@@ -41,8 +42,9 @@
 <div id="wrP2" class="write-popup">
   <div class="write-popup-content">
     <form action="/users/submitD" method="POST">
-      <input type="text" name="input" placeholder="Enter your text here2" class="write-popup-input">
+      <textarea id="desc" name="input" placeholder="Enter your text here" class="write-popup-input" required></textarea>
       <button type="submit" class="write-popup-button">Submit</button>
+      <button type="button" id="wrPB" onclick="writePopUp(3)" class="write-popup-button">Close</button>
     </form>
   </div>
 </div>

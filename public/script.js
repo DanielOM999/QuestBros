@@ -145,9 +145,15 @@ function writePopUp(swi) {
     const wrP = document.getElementById("wrP");
     const wrP2 = document.getElementById("wrP2");
     if(swi == 0){
+        wrP2.classList.remove("write-popup2");
         wrP.classList.add("write-popup2");
-    } else {
+    } else if (swi == 1) {
+        wrP.classList.remove("write-popup2");
+    } else if (swi == 2) {
+        wrP.classList.remove("write-popup2");
         wrP2.classList.add("write-popup2");
+    } else {
+        wrP2.classList.remove("write-popup2");
     }
 }
 

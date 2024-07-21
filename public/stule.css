@@ -966,6 +966,14 @@ html {
   .write-popup-button:hover {
     background-color: #45a049;
   }
+
+  #wrPB {
+    background-color: #c22020;
+  }
+
+  #wrPB:hover {
+    background-color: #a04545;
+  }
   
   @media (max-width: 480px) {
     .write-popup {
