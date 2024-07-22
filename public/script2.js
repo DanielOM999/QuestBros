@@ -87,11 +87,21 @@ function displayMessages(messages, currentUser) {
             div2.classList.add('left');
         }
 
+        let mP1;
+
         if (!message.profilePic) {
-            message.profilePic = (message.username === currentUser) ? currentUserPic : "/profile.png";
+            if (message.username === currentUser && currentUserPic) {
+                mP1 = currentUserPic;
+            } else {
+                mP1 = "/profile.png";
+            }
+            console.log("Using default profile pic or current user pic");
+        } else {
+            mP1 = message.profilePic;
+            console.log("Using messages.profilePic");
         }
 
-        const formattedProfilePic = formatImagePath(message.profilePic);
+        const formattedProfilePic = formatImagePath(mP1);
         console.log(formattedProfilePic);
         div2.style.setProperty('--profile-pic-url', `url('${formattedProfilePic}')`);
 
@@ -300,11 +310,20 @@ socket.onmessage = (event) => {
         div2.classList.add('left');
     }
 
+    let mP1;
+
     if (!messages.profilePic) {
-        messages.profilePic = (messages.username === currentUser) ? currentUserPic : "/profile.png";
+        if (messages.username === currentUser && currentUserPic) {
+            mP1 = currentUserPic;
+        } else {
+            mP1 = "/profile.png";
+        }
+    } else {
+        mP1 = messages.profilePic;
     }
 
-    const formattedProfilePic = formatImagePath(messages.profilePic);
+    console.log(mP1);
+    const formattedProfilePic = formatImagePath(mP1);
     console.log(formattedProfilePic);
     div2.style.setProperty('--profile-pic-url', `url('${formattedProfilePic}')`);
 

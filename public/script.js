@@ -32,6 +32,18 @@ document.addEventListener("DOMContentLoaded", function() {
     checkScroll();
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    // Check if the URL contains ?cheak
+    if (window.location.search.includes('?cheak')) {
+        // Set the checkbox to checked to show login form
+        document.getElementById('chk').checked = true;
+
+        // Remove ?cheak from the URL without refreshing the page
+        const newUrl = window.location.href.replace('?cheak', '');
+        window.history.replaceState({}, document.title, newUrl);
+    }
+});
+
 let availebileKeywords = [
     "paranormal",
     "ghost hunting",
