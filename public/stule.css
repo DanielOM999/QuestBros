@@ -117,9 +117,9 @@ html {
 }
 
 .sticky-image {
-    position: relative;
-    top: 0;
-    margin-top: 0;
+    position: fixed;
+    bottom: 0;
+    margin: 0;
 }
 
 .sticky {
@@ -321,11 +321,16 @@ html {
     background: #555;
 }
 
+.main-container {
+    max-width: 2000px;
+    width: 100%;
+    margin: 0 auto;
+}
 .fbb {
     background: #111111;
     position: absolute;
-    transform: translateX(-5.7vw);
-    width: 100%;
+    transform: translateX(-10%);
+    width: 110%;
     height: 25vw;
     z-index: -1;
 }
@@ -351,6 +356,7 @@ html {
     overflow: hidden;
     cursor: pointer;
     transition: 0.4s;
+    display: inline-block;
 }
 
 .scroll-container h1 {
@@ -375,8 +381,8 @@ html {
 }
 
 .scroll-container:hover {
-    transform: scale(1.1, 1.1);
-    width: 25vw;
+    transform: scale(1.1);
+    z-index: 6;
 }
 
 .fill {

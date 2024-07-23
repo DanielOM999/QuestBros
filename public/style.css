@@ -6,6 +6,16 @@ body {
   padding: 20px;
   line-height: 1.6;
 }
+body::-webkit-scrollbar {
+  width: .9rem;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #515152;
+  border-radius: 2px;
+}
+body::-webkit-scrollbar-track {
+  background-color: #212529;
+}
 .container {
   max-width: 600px;
   margin: 0 auto;

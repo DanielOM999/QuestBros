@@ -274,14 +274,16 @@ router.get("/chats", async (req, res) => {
 });
 
 router.get("/chats/:id", async (req, res) => {
-    const id = parseInt(req.params.id);
-    const messages = await getMessages();
-    const filteredChats = messages.filter(chat => chat.formid === id);
-
-    if (filteredChats.length > 0) {
-        res.json({ messages: filteredChats, currentUser: req.user.username, currentUserPic: req.user.image });
-    } else {
-        res.status(404).json({ error: "No messages found for this form ID." });
+    if (req.user) {
+        const id = parseInt(req.params.id);
+        const messages = await getMessages();
+        const filteredChats = messages.filter(chat => chat.formid === id);
+    
+        if (filteredChats.length > 0) {
+            res.json({ messages: filteredChats, currentUser: req.user.username, currentUserPic: req.user.image });
+        } else {
+            res.status(404).json({ error: "No messages found for this form ID." });
+        }
     }
 });
 
