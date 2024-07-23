@@ -3,11 +3,11 @@ require("dotenv").config();
 
 const sequelize = new Sequelize({
     dialect: 'postgres',
-    host: 'localhost',
-    port: "5432",
-    username: "node",
+    host: 'aws-0-eu-central-1.pooler.supabase.com',
+    port: "6543",
+    username: "postgres.wuhtbzikkvsplzhdgpsn",
     password: process.env.SERVER_LOGIN,
-    database: "ghosthunting",
+    database: "postgres",
     pool: {
         max: 5,
         min: 0,
