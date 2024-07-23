@@ -12,6 +12,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@supabase/supabase-js": "^2.44.4",
+    "base64-arraybuffer": "^1.0.2",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.9",
@@ -33,6 +35,8 @@
     "nodemon": "^3.1.0"
   },
   "nodemonConfig": {
-    "ignore": ["./routes/messages.json"]
+    "ignore": [
+      "./routes/messages.json"
+    ]
   }
 }
