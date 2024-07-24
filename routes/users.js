@@ -7,33 +7,51 @@ const db = require('../config/database');
 const userTabel = require("../models/userTabel");
 const multer = require("multer");
 const path = require("path");
+const { supabase } = require("./supabase");
+const { encode } = require("base64-arraybuffer");
 const fs = require('fs');
 const router = express.Router();
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "Images")
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname))
-    }
-})
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, "Images")
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, Date.now() + path.extname(file.originalname))
+//     }
+// })
 
+// const upload = multer({
+//     storage: storage,
+//     limits: { fileSize: 5000000 },
+//     fileFilter: (req, file, cb) => {
+//         const fileType = /jpeg|jpg|png|gif/
+//         const mimeType = fileType.test(file.mimetype)
+//         const textname = fileType.test(path.extname(file.originalname))
+
+//         if (mimeType && textname) {
+//             return cb(null, true)
+//         }
+//         cb("File must be PNG, JPG or GIF")
+        
+//     }
+// }).single("image")
+
+const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
     limits: { fileSize: 5000000 },
     fileFilter: (req, file, cb) => {
-        const fileType = /jpeg|jpg|png|gif/
-        const mimeType = fileType.test(file.mimetype)
-        const textname = fileType.test(path.extname(file.originalname))
+        const fileType = /jpeg|jpg|png|gif/;
+        const mimeType = fileType.test(file.mimetype);
+        const textname = fileType.test(path.extname(file.originalname));
 
         if (mimeType && textname) {
-            return cb(null, true)
+            return cb(null, true);
         }
-        cb("File must be PNG, JPG or GIF")
-        
+        cb("File must be PNG, JPG or GIF");
     }
-}).single("image")
+}).single("image");
 
 passport.use(new LocalStrategy(async function verify(username, password, done) {
     try {
@@ -110,24 +128,90 @@ router.post("/logout", (req, res, next) => {
     })
 });
 
+// router.post("/uploadProfilePic", upload, async (req, res) => {
+//     try {
+//         if (!req.file) {
+//             return res.status(400).redirect("/users?failed=1");
+//         }
+
+//         console.log("File uploaded:", req.file);
+
+//         const user = await userTabel.findOne({ where: { username: req.user.username } });
+//         if (!user) {
+//             return res.status(404).redirect("/users?failed=2");
+//         }
+
+//         if (user.image) {
+//             fs.unlinkSync(user.image);
+//         }
+
+//         user.image = req.file.path;
+//         await user.save();
+
+//         res.status(200).redirect("/users");
+//     } catch (error) {
+//         console.error("Error uploading file:", error);
+//         res.status(500).redirect("/users?failed=3");
+//     }
+// });
+
 router.post("/uploadProfilePic", upload, async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).redirect("/users?failed=1");
         }
 
-        console.log("File uploaded:", req.file);
+        // Generate a unique filename
+        const uniqueFilename = `${Date.now()}_${req.file.originalname}`;
 
+        // Find the user and check if they already have an image
         const user = await userTabel.findOne({ where: { username: req.user.username } });
         if (!user) {
             return res.status(404).redirect("/users?failed=2");
         }
 
+        // Delete the existing image if it exists
         if (user.image) {
-            fs.unlinkSync(user.image);
+            // Extract the path from the URL
+            const oldImagePath = user.image.split('/storage/v1/object/public/Images/')[1];
+            console.log(oldImagePath);
+
+            const { error: deleteError } = await supabase.storage
+                .from("Images")
+                .remove([oldImagePath]);
+
+            if (deleteError) {
+                throw deleteError;
+            }
         }
 
-        user.image = req.file.path;
+        // Upload the new file to Supabase with the generated filename
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from("Images")
+            .upload(uniqueFilename, req.file.buffer, {
+                contentType: req.file.mimetype,
+                cacheControl: '3600',
+                upsert: false
+            });
+
+        if (uploadError) {
+            throw uploadError;
+        }
+
+        // Get the public URL of the uploaded file
+        const { data: publicUrlData, error: urlError } = supabase.storage
+            .from("Images")
+            .getPublicUrl(uniqueFilename);
+
+        if (urlError) {
+            throw urlError;
+        }
+
+        const publicURL = publicUrlData.publicUrl;
+
+        // Save the Supabase public URL
+        console.log(publicURL);
+        user.image = publicURL; // Save Supabase URL
         await user.save();
 
         res.status(200).redirect("/users");
