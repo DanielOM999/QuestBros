@@ -18,17 +18,24 @@ Before you begin, ensure you have the following environment variables set in a `
    SERVER_LOGIN=your_login_here
    SUPABASE_PROJECT_URL=your_project_url_here
    SUPABASE_ANON_KEY=your_anon_key_here
+   ```
 
 ## Install Dependencies
 
-    Make sure to run the following command to install all necessary dependencies:
+Make sure to run the following command to install all necessary dependencies:
 
     npm install
     Running the Application
 
-    After setting up the .env file and installing dependencies, you can start the application with:
+After setting up the .env file and installing dependencies, you can start the application with:
 
-    npm run start or npm run dev (nodemon)
+   ```plaintext
+    npm run start
+   ```
+   or 
+   ```plaintext
+   npm run dev (nodemon)
+   ```
 
 ## Usage
 After you run the application, navigate to http://localhost:3000 in your web browser to access the project.
