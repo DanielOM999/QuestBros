@@ -1,6 +1,6 @@
 # QuestBros
 
-A project focused on game development, programming, and 3D design, utilizing Node.js for backend operations.
+A website dedicated to ghost hunting and related topics, featuring a forum where users can start discussions and share experiences. This project leverages Node.js for backend operations and utilizes Supabase (PostgreSQL) for data management, allowing for an interactive platform that connects enthusiasts of the supernatural.
 
 ## Prerequisites
 
