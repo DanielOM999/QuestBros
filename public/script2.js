@@ -385,36 +385,6 @@ function sendMessage() {
     }
 }
 
-// function sendMessage() {
-//     let messageContent = document.getElementById("m-in").innerHTML;
-
-//     if (messageContent.trim() !== '') {
-//         var div2 = document.createElement('div');
-//         div2.className = 'col-12 col-md-6 message right';
-
-//         var tempContainer = document.createElement('div');
-//         tempContainer.innerHTML = messageContent;
-
-//         tempContainer.childNodes.forEach(node => {
-//             if (node.nodeName === '#text') {
-//                 var p2 = document.createElement('p');
-//                 p2.innerHTML = node.textContent.replace(/[\r\n]+/gm, "<br>");
-//                 div2.appendChild(p2);
-//             } else if (node.nodeName === 'IMG') {
-//                 var img = document.createElement('img');
-//                 img.src = node.src;
-//                 img.style.maxWidth = '100%';
-//                 img.style.height = 'auto';
-//                 div2.appendChild(img);
-//             }
-//         });
-
-//         var container = document.getElementById('container');
-//         container.appendChild(div2);
-//         document.getElementById("m-in").innerHTML = "";
-//     }
-// }
-
 document.getElementById('videoInput').addEventListener('change', function() {
     const file = this.files[0];
     if (file && file.size <= 5242880) {

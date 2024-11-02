@@ -12,31 +12,6 @@ const { encode } = require("base64-arraybuffer");
 const fs = require('fs');
 const router = express.Router();
 
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, "Images")
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, Date.now() + path.extname(file.originalname))
-//     }
-// })
-
-// const upload = multer({
-//     storage: storage,
-//     limits: { fileSize: 5000000 },
-//     fileFilter: (req, file, cb) => {
-//         const fileType = /jpeg|jpg|png|gif/
-//         const mimeType = fileType.test(file.mimetype)
-//         const textname = fileType.test(path.extname(file.originalname))
-
-//         if (mimeType && textname) {
-//             return cb(null, true)
-//         }
-//         cb("File must be PNG, JPG or GIF")
-        
-//     }
-// }).single("image")
-
 const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
@@ -127,33 +102,6 @@ router.post("/logout", (req, res, next) => {
         res.redirect("/users/req")
     })
 });
-
-// router.post("/uploadProfilePic", upload, async (req, res) => {
-//     try {
-//         if (!req.file) {
-//             return res.status(400).redirect("/users?failed=1");
-//         }
-
-//         console.log("File uploaded:", req.file);
-
-//         const user = await userTabel.findOne({ where: { username: req.user.username } });
-//         if (!user) {
-//             return res.status(404).redirect("/users?failed=2");
-//         }
-
-//         if (user.image) {
-//             fs.unlinkSync(user.image);
-//         }
-
-//         user.image = req.file.path;
-//         await user.save();
-
-//         res.status(200).redirect("/users");
-//     } catch (error) {
-//         console.error("Error uploading file:", error);
-//         res.status(500).redirect("/users?failed=3");
-//     }
-// });
 
 router.post("/uploadProfilePic", upload, async (req, res) => {
     try {

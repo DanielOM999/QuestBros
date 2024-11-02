@@ -35,21 +35,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get("/", (req, res) => res.render("index"));
-// app.get("/form", (req, res) => { 
-//     res.render("form")
-//     // if(req.user) {
-//     //     res.render("form")
-//     // }else {
-//     //     res.redirect("/users/req")
-//     // }
-// });
 app.get("/about", (req, res) => res.render("about"));
 app.get("/aboutv2", (req, res) => res.render("aboutv2"));
 app.get("/add", (req, res) => res.render("add"));
-// app.get("/test", (req, res) => res.render("test"));
-// app.get("/reg", (req, res) => res.render("tlogin", { layout: "user" }))
-// app.get("/login", (req, res) => res.render("loging"));
-// app.get("/register", (req, res) => res.render("register"));
 
 const userRouter = require("./routes/users");
 const formRouter = require("./routes/form");
